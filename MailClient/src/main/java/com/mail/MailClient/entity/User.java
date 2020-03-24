@@ -1,4 +1,4 @@
-package com.mail.demo.entity;
+package com.mail.MailClient.entity;
 
 //用户类
 public class User

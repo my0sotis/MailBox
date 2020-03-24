@@ -1,4 +1,4 @@
-package com.mail.demo;
+package com.mail.MailClient;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

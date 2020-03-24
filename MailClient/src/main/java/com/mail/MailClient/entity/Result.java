@@ -1,4 +1,4 @@
-package com.mail.demo.entity;
+package com.mail.MailClient.entity;
 
 public class Result
 {

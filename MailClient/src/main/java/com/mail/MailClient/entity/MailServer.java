@@ -1,4 +1,4 @@
-package com.mail.demo.entity;
+package com.mail.MailClient.entity;
 import java.util.HashMap;
 
 // smtp服务器和pop服务器名称及端口

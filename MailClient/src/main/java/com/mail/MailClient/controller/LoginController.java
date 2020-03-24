@@ -1,7 +1,7 @@
-package com.mail.demo.controller;
+package com.mail.MailClient.controller;
 
-import com.mail.demo.entity.Result;
-import com.mail.demo.entity.User;
+import com.mail.MailClient.entity.Result;
+import com.mail.MailClient.entity.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
