@@ -1,19 +1,22 @@
 package com.mail.MailClient.entity;
 import java.util.HashMap;
 
-// smtp服务器和pop服务器名称及端口
+
+/**
+ * SMTP服务器和POP3服务器名称及端口
+ * @author iGao101
+ */
 public class MailServer
 {
     public static HashMap<String, Integer> smtpServer = new HashMap<>();
     public static HashMap<String, Integer> popServer = new HashMap<>();
 
-    public static void init(){
+    public static void init() {
         setSmtpServer();
         setPopServer();
     }
 
-    public static void setSmtpServer()
-    {
+    public static void setSmtpServer() {
         smtpServer.put("smtp.gmail.com", 587);
         smtpServer.put("smtp.263.net.cn", 25);
         smtpServer.put("smtp.21cn.com", 25);
@@ -31,8 +34,7 @@ public class MailServer
         smtpServer.put("whu.edu.cn", 25);
     }
 
-    public static void setPopServer()
-    {
+    public static void setPopServer() {
         popServer.put("pop.gmail.com", 995);
         popServer.put("pop.263.net.cn", 110);
         popServer.put("pop.21cn.com", 110);

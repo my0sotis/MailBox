@@ -13,36 +13,45 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Mail
-{
-    private static final String LINE_END = "\r\n";  //结束符
+public class Mail {
+    //结束符
+    private static final String LINE_END = "\r\n";
     private String username;
     private String password;
     private String[] to;
     private String[] cc;
     private String[] bcc;
-    private List<String> receivers;                 //所有接收者
-    private Map.Entry<String, Integer> smtp;        //smtp服务器
+    /**
+     * 所有接收者
+     */
+    private List<String> receivers;
+    // smtp服务器
+    private Map.Entry<String, Integer> smtp;
     private Map.Entry<String, Integer> pop;
     private String[] attachments;
-    private String defaultAttachmentContentType;    //附件内容类型
+    // 附件内容类型
+    private String defaultAttachmentContentType;
     private String subject;
     private String content;
-    private String contentType;                     //内容类型
+    // 内容类型
+    private String contentType;
     private String contentDisposition;
     private String contentTransferEncoding;
-    private Map<String, String> contentTypeMap;     //文件类型映射
-    private String charset;                         //编码集
+    // 文件类型映射
+    private Map<String, String> contentTypeMap;
+    // 编码集
+    private String charset;
     private String boundary;
     private String boundaryNextPart;
-    private String simpleDatePattern;               //日期格式
+    //日期格式
+    private String simpleDatePattern;
     private List<Mail> partSet;
 
 
     public Mail() {
         init();
     }
-    public Mail(String username, String password){
+    public Mail(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -57,7 +66,8 @@ public class Mail
      * @param content 内容
      * @param attachments 附件地址
      */
-    public Mail(String username, String password, String[] to, String[] cc, String[] bcc, String subject, String content, String[] attachments){
+    public Mail(String username, String password, String[] to, String[] cc, String[] bcc,
+                String subject, String content, String[] attachments) {
         init();
         this.username = username;
         this.password = password;
@@ -70,8 +80,10 @@ public class Mail
         contentTypeMap = new HashMap<>();
     }
 
-    //初始化
-    public void init(){
+    /**
+     * 初始化
+     */
+    public void init() {
         defaultAttachmentContentType = "application/octet-stream";
         simpleDatePattern = "yyyy-MM-dd HH:mm:ss";
         boundary = "--=_NextPart_zlz_3907_" + System.currentTimeMillis();
@@ -79,11 +91,11 @@ public class Mail
         contentTransferEncoding = "base64";
         contentType = "multipart/alternative";
         charset = Charset.defaultCharset().name();
-        partSet = new ArrayList<Mail>();
+        partSet = new ArrayList<>();
         receivers = new ArrayList<>();
 
         // MIME Media Types
-        contentTypeMap = new HashMap<String, String>();
+        contentTypeMap = new HashMap<>();
         contentTypeMap.put("xls", "application/vnd.ms-excel");
         contentTypeMap.put("xlsx", "application/vnd.ms-excel");
         contentTypeMap.put("xlsm", "application/vnd.ms-excel");
@@ -94,28 +106,26 @@ public class Mail
         contentTypeMap.put("docm", "application/msword");
         contentTypeMap.put("dotm", "application/msword");
     }
+
     /**
      * 设置smtp和pop服务器信息
-     *
      * @param username 发件人邮箱
      */
-    public Result setServerInfo(String username){
-        if (null == username || !username.contains("@"))
+    public Result setServerInfo(String username) {
+        if (null == username || !username.contains("@")) {
             return new Result(0);
+        }
         MailServer.init();
-        String suffix = username.split("@")[1];  //邮箱后缀
-        for (Map.Entry<String, Integer> entry : MailServer.smtpServer.entrySet())
-        {
-            if (entry.getKey().contains(suffix))
-            {
+        //邮箱后缀
+        String suffix = username.split("@")[1];
+        for (Map.Entry<String, Integer> entry : MailServer.smtpServer.entrySet()) {
+            if (entry.getKey().contains(suffix)) {
                 smtp = entry;
                 break;
             }
         }
-        for (Map.Entry<String, Integer> entry : MailServer.popServer.entrySet())
-        {
-            if (entry.getKey().contains(suffix))
-            {
+        for (Map.Entry<String, Integer> entry : MailServer.popServer.entrySet()) {
+            if (entry.getKey().contains(suffix)) {
                 pop = entry;
                 break;
             }
@@ -123,19 +133,33 @@ public class Mail
         return new Result(250);
     }
 
-    //所有接收者
-    public void getAllReceivers(){
-        for(int i = 0; i < to.length; i++)
-            if(! to[i].equals("") && to[i] != null)
-                receivers.add(to[i]);
+    /**
+     *  所有接收者
+     */
+    public void getAllReceivers() {
+        if (to != null) {
+            for (String s : to) {
+                if (s != null && !"".equals(s)) {
+                    receivers.add(s);
+                }
+            }
+        }
 
-        for(int i = 0; i < cc.length; i++)
-            if(!cc[i].equals("") && cc[i] != null)
-                receivers.add(cc[i]);
+        if (cc != null) {
+            for (String s : cc) {
+                if (s != null && !"".equals(s)) {
+                    receivers.add(s);
+                }
+            }
+        }
 
-        for(int i = 0; i < bcc.length; i++)
-            if(!bcc[i].equals("") && bcc[i] != null)
-                receivers.add(bcc[i]);
+        if (bcc != null) {
+            for (String s : bcc) {
+                if (s != null && !"".equals(s)) {
+                    receivers.add(s);
+                }
+            }
+        }
     }
 
     /**
@@ -158,7 +182,10 @@ public class Mail
         return type;
     }
 
-    //合并所有单元
+    /**
+     * 并所有单元
+     * @return 合并后的单元格
+     */
     private String getAllParts() {
         int count = partSet.size();
         StringBuilder info = new StringBuilder(LINE_END);
@@ -190,7 +217,9 @@ public class Mail
         return info.toString();
     }
 
-    //添加邮件正文单元
+    /**
+     * 添加邮件正文单元
+     */
     private void addContent() {
         if (null != content) {
             Mail part = new Mail();
@@ -200,17 +229,24 @@ public class Mail
         }
     }
 
-    //联系人数组转换为字符串
+    /**
+     * 联系人数组转换为字符串
+     * @param receivers 联系人数组
+     * @return 字符串
+     */
     private String listToMailString(String[] receivers) {
         StringBuilder info = new StringBuilder();
         if (null != receivers) {
-            for(String r : receivers)
+            for(String r : receivers) {
                 info.append("<").append(r).append(">");
+            }
         }
         return info.toString();
     }
 
-    //添加附件
+    /**
+     * 添加附件
+     */
     public void addAttachment(String filePath) {
         addAttachment(filePath, null);
     }
@@ -233,7 +269,7 @@ public class Mail
                 byte[] buff = new byte[buffSize];
                 byte[] temp;
                 bs = new byte[0];
-                int readTotal = 0;
+                int readTotal;
                 while (-1 != (readTotal = attachmentStream.read(buff))) {
                     temp = new byte[bs.length];
                     System.arraycopy(bs, 0, temp, 0, bs.length);
@@ -270,16 +306,25 @@ public class Mail
         }
     }
 
-    //发送邮件
+    /**
+     * 发送邮件
+     */
     public Result sendMail() {
         Socket socket = null;
         PrintWriter writer = null;
         BufferedReader reader = null;
-        if(attachments != null)                      //添加附件
-            for(String path : attachments)
+        //添加附件
+        if(attachments != null)
+        {
+            for(String path : attachments) {
                 addAttachment(path);
-        if(setServerInfo(username).getCode() != 250) //设置SMTP服务器
+            }
+        }
+        //设置SMTP服务器
+        if(setServerInfo(username).getCode() != 250)
+        {
             return new Result(0);
+        }
 
         try {
             socket = new Socket(smtp.getKey(), smtp.getValue());
@@ -288,24 +333,35 @@ public class Mail
 
             // 与服务器建立连接
             readResponse(writer, reader, "220");
-            writer.write("HELO ".concat(smtp.getKey()).concat(LINE_END)); // 连接到邮件服务
+            // 连接到邮件服务
+            writer.write("HELO ".concat(smtp.getKey()).concat(LINE_END));
             readResponse(writer, reader, "250");
-            writer.write("AUTH LOGIN".concat(LINE_END));  // 登录
-            if (!readResponse(writer, reader, "334"))
+            // 登录
+            writer.write("AUTH LOGIN".concat(LINE_END));
+            if (!readResponse(writer, reader, "334")) {
                 return new Result(1);
+            }
 
-            writer.write(Base64.getEncoder().encodeToString(username.getBytes()).concat(LINE_END));     // 输入用户名
+            // 输入用户名
+            writer.write(Base64.getEncoder().encodeToString(username.getBytes()).concat(LINE_END));
             readResponse(writer, reader, "334");
 
-            writer.write(Base64.getEncoder().encodeToString(password.getBytes()).concat(LINE_END)); // 输入密码
-            if (!readResponse(writer, reader, "235"))
+            // 输入密码
+            writer.write(Base64.getEncoder().encodeToString(password.getBytes()).concat(LINE_END));
+            if (!readResponse(writer, reader, "235")) {
                 return new Result(2);
+            }
 
-            getAllReceivers();     //获取所有收件人
-            if(receivers == null)  //用于登陆检测
+            //获取所有收件人
+            getAllReceivers();
+            //用于登陆检测
+            if(receivers == null)
+            {
                 return new Result(200);
+            }
 
-            writer.write("MAIL FROM:<" + username + ">" + LINE_END);      // 发件人邮箱地址
+            // 发件人邮箱地址
+            writer.write("MAIL FROM:<" + username + ">" + LINE_END);
             readResponse(writer, reader, "250");
 
 
@@ -314,7 +370,8 @@ public class Mail
                 readResponse(writer, reader, "250");
             }
 
-            writer.write("DATA" + LINE_END);           // 开始输入邮件
+            // 开始输入邮件
+            writer.write("DATA" + LINE_END);
             readResponse(writer, reader, "354");
             writer.flush();
 
@@ -340,8 +397,9 @@ public class Mail
 
             mail.append(LINE_END).append(".").append(LINE_END);
             writer.write(mail.toString());
-            if(! readResponse(writer, reader, "250"))
+            if(! readResponse(writer, reader, "250")) {
                 return new Result(3);
+            }
             writer.flush();
 
             writer.write("QUIT" + LINE_END); // QUIT退出
@@ -352,17 +410,21 @@ public class Mail
         }finally {
             // 释放资源
             try {
-                if (null != socket)
+                if (null != socket) {
                     socket.close();
-                if (null != writer)
+                }
+                if (null != writer) {
                     writer.close();
-                if (null != reader)
+                }
+                if (null != reader) {
                     reader.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(partSet != null)
+            if(partSet != null) {
                 this.partSet.clear();
+            }
         }
         return new Result(250);
     }
@@ -414,70 +476,59 @@ public class Mail
         this.content = content;
     }
 
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username)
-    {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String[] getTo()
-    {
+    public String[] getTo() {
         return to;
     }
 
-    public void setTo(String[] to)
-    {
+    public void setTo(String[] to) {
         this.to = to;
     }
 
-    public String[] getCc()
-    {
+    public String[] getCc() {
         return cc;
     }
 
-    public void setCc(String[] cc)
-    {
+    public void setCc(String[] cc) {
         this.cc = cc;
     }
 
-    public String[] getBcc()
-    {
+    public String[] getBcc() {
         return bcc;
     }
 
-    public void setBcc(String[] bcc)
-    {
+    public void setBcc(String[] bcc) {
         this.bcc = bcc;
     }
 
-    public void setAttachments(String[] attachments)
-    {
+    public void setAttachments(String[] attachments) {
         this.attachments = attachments;
     }
 
-    public void setSubject(String subject)
-    {
+    public void setSubject(String subject) {
         this.subject = subject;
     }
 
     public static void main(String[] args) {
-        String[] to = {"2017302580230@whu.edu.cn"};
-        String[] a = {"E:\\图片\\avater.jpg"};
-        Mail mail = new Mail("2017302580230@whu.edu.cn", "qaq", to, null, null, "CC Test Mail!! 哈哈", "\"这是一个测试，请不要回复！\"", a);
-        System.out.println(mail.sendMail().getCode()); // 发送
+        String[] to = {""};
+        String[] a = {};
+        Mail mail = new Mail("", "", to, null,
+                null, "CC Test Mail!! 哈哈", "\"这是一个测试，请不要回复！\"", a);
+        System.out.println(mail.sendMail().getCode());
     }
 }

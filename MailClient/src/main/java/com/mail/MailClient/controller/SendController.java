@@ -19,7 +19,7 @@ public class SendController
     @CrossOrigin
     @PostMapping(value = "api/mail") //定义访问REST端点的Request URI
     @ResponseBody
-    public Result mail(@RequestBody Mail mail){
+    public Result mail(@RequestBody Mail mail) {
         Result result = mail.sendMail();
         System.out.println(result.getCode());
         return result;

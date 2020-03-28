@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * @author iGao101
+ */
 @Controller
 public class LoginController
 {
@@ -20,8 +23,9 @@ public class LoginController
     @PostMapping(value = "api/login") //定义访问REST端点的Request URI
     @ResponseBody
     public Result login(@RequestBody User user) {
-        if(user == null || user.getUsername() == null || user.getPassword() == null)
+        if(user == null || user.getUsername() == null || user.getPassword() == null) {
             return new Result(0);
+        }
         return user.checkInfo();
     }
 }
