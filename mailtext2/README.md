@@ -1,4 +1,4 @@
-# mailbox
+# mailtext2
 
 > A Vue.js project
 
