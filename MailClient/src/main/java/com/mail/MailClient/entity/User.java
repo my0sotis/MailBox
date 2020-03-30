@@ -1,5 +1,7 @@
 package com.mail.MailClient.entity;
 
+import com.mail.MailClient.controller.Sender;
+
 /**
  * 用户类
  * @author iGao101
@@ -31,6 +33,7 @@ public class User
      */
     public Result checkInfo() {
         Mail mail = new Mail(username, password);
-        return mail.sendMail();
+        Sender sender = new Sender(mail);
+        return sender.sendMail();
     }
 }

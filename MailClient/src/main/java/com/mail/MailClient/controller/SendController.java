@@ -20,7 +20,8 @@ public class SendController
     @PostMapping(value = "api/mail") //定义访问REST端点的Request URI
     @ResponseBody
     public Result mail(@RequestBody Mail mail) {
-        Result result = mail.sendMail();
+        Sender sender = new Sender(mail);
+        Result result = sender.sendMail();
         System.out.println(result.getCode());
         return result;
     }
