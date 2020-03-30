@@ -1,7 +1,7 @@
 package com.mail.MailClient.controller;
 
 import com.mail.MailClient.entity.Mail;
-import com.mail.MailClient.entity.MailServer;
+import com.mail.MailClient.entity.SMTPServer;
 import com.mail.MailClient.entity.Result;
 
 import java.io.*;
@@ -16,13 +16,7 @@ import java.util.*;
 public class Sender {
     private static final String LINE_END = "\r\n";
     private Mail currentMail;
-//    private String[] attachments;
     private Map.Entry<String, Integer> smtp;
-    private Map.Entry<String, Integer> pop;
-    /**
-     * 所有接收者
-     */
-//    private List<String> receivers;
 
     public Sender(Mail mail) {
         currentMail = mail;
@@ -49,25 +43,19 @@ public class Sender {
     }
 
     /**
-     * 设置smtp和pop服务器信息
+     * 设置SMTP服务器信息
      * @param username 发件人邮箱
      */
     public Result setServerInfo(String username) {
         if (null == username || !username.contains("@")) {
             return new Result(0);
         }
-        MailServer.init();
+        SMTPServer.initServer();
         //邮箱后缀
         String suffix = username.split("@")[1];
-        for (Map.Entry<String, Integer> entry : MailServer.smtpServer.entrySet()) {
+        for (Map.Entry<String, Integer> entry : SMTPServer.smtpServer.entrySet()) {
             if (entry.getKey().contains(suffix)) {
                 smtp = entry;
-                break;
-            }
-        }
-        for (Map.Entry<String, Integer> entry : MailServer.popServer.entrySet()) {
-            if (entry.getKey().contains(suffix)) {
-                pop = entry;
                 break;
             }
         }
@@ -119,7 +107,6 @@ public class Sender {
                 mail.setContent(Base64.getEncoder().encodeToString(bs));
                 currentMail.addPartSet(mail);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -130,7 +117,6 @@ public class Sender {
                     e.printStackTrace();
                 }
             }
-
             Runtime.getRuntime().gc();
             Runtime.getRuntime().runFinalization();
         }
@@ -377,7 +363,6 @@ public class Sender {
         Mail mail = new Mail("2017302580244@whu.edu.cn", "zpc888wsadjkl,./", to, null,
                 null, "CC Test Mail!! 哈哈", "\"这是一个测试，请不要回复！\"", a);
         Sender sender = new Sender(mail);
-//        sender.sendMail();
         System.out.println(sender.sendMail().getCode());
     }
 }
