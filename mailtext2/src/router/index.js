@@ -10,6 +10,7 @@ import RecieveMail from '../components/RecieveMail/recieveMail'
 import DraftMail from '../components/DraftMail/draftMail'
 import Al_send from '../components/Al_send/al_send'
 import RubbishMail from '../components/RubbishMail/rubbishMail'
+import LookMail from '../components/LookMail/lookMail'
 
 
 Vue.use(Router)
@@ -35,6 +36,7 @@ export default new Router({
         { path: '/draftMail', name: 'DraftMail', component: DraftMail },
         { path: '/al_send', name: 'Al_send', component: Al_send },
         { path: '/rubbishMail', name: 'RubbishMail', component: RubbishMail },
+        { path: '/lookMail', name: 'LookMail', component: LookMail },
       ]
     }
   ]

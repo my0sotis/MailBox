@@ -5,7 +5,7 @@
       <div>
         <img src="../assets/font1.png" alt />
       </div>
-      <el-button type="info" round @click="quitLogin">返回登陆</el-button>
+      <el-button  round @click="quitLogin">返回登陆</el-button>
     </el-header>
     <!-- 页面的主体区域 -->
     <el-container>
@@ -36,6 +36,10 @@
           <el-menu-item index="/rubbishMail" @click="'/'+saveNavState(rubbishMail)">
             <i class="el-icon-menu"></i>
             <span slot="title">垃圾邮件</span>
+          </el-menu-item>
+          <el-menu-item index="/lookMail" @click="'/'+saveNavState(lookMail)">
+            <i class="el-icon-menu"></i>
+            <span slot="title">查看邮件内容(暂时)</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

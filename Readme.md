@@ -4,3 +4,4 @@
 
 ​		2导航栏框架完成，右侧退出按钮返回登陆界面，左侧导航栏上侧是侧边栏的放缩。侧边栏点击，跳转相应的界面。（sendMail-发送邮件  recieveMail-收件箱  draftMail-草稿箱  al_send-已发送邮件 rubbishMail-垃圾邮箱）
 
+​		3 将 sendMail lookMail大致框架完成。
