@@ -63,7 +63,7 @@
             <el-button round @click="return_btn" class="R_btn">返回</el-button>
           </el-col>
         </el-row>
-        
+
       </el-form>
     </el-card>
   </div>
@@ -89,6 +89,10 @@ export default {
     storeRubbish_btn() {    //放入垃圾箱
 
 
+
+    },
+    getChooseInfo(){
+      return this.$route.query.id;
     },
     return_btn() {      //返回收件箱
         this.$router.replace('/recieveMail')
