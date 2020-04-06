@@ -4,8 +4,6 @@
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>垃圾箱</el-breadcrumb-item>
-        <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-        <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
       </el-breadcrumb>
       <!-- 卡片区域 -->
       <el-card>
@@ -32,7 +30,7 @@
             width="120">
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="sender"
             label="发件人"
             width="120">
           </el-table-column>
@@ -51,18 +49,18 @@
           </el-table-column>
         </el-table>
 
-        <!-- 后两个按钮区域 -->
+        <!-- 按钮区域 -->
         <el-row :gutter="10" class="bottom_btns">
           <el-col :span="2.5">
-            <!--全部清空按钮 事件clearALL_btn-->
+            <!--取消多选按钮-->
             <el-button round @click="toggleSelection()">取消选择</el-button>
           </el-col>
           <el-col :span="2">
-            <!--全部清空按钮 事件clearALL_btn-->
+            <!--清空按钮-->
             <el-button round @click="clear_btn">清空</el-button>
           </el-col>
           <el-col :span="4">
-            <!--移动邮件按钮 事件clearALL_btn-->
+            <!--移动邮件按钮-->
             <el-select v-model="value" placeholder = "移动至">
               <el-option
                 v-for="item in options"
@@ -83,6 +81,7 @@
 export default {
   data() {
     return {
+      //查看邮件具体内容的Json变量
       lookMailJson : null,
       options: [{
         value: '收件箱',
@@ -92,53 +91,18 @@ export default {
         label: '已发送'
       }],
       value: '',
+      //接收垃圾邮件的数组
       tableData : [],
-
-      /*tableData: [{
-        no:1,
-        date: '2016-05-03',
-        name: '王小虎',
-        content: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        no:2,
-        date: '2016-05-02',
-        name: '王小虎',
-        content: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        no:3,
-        date: '2016-05-04',
-        name: '王小虎',
-        content: '上海市普陀区金沙江路 1518 弄adasdadasdasdasdaas'
-      }, {
-        no:4,
-        date: '2016-05-01',
-        name: '王小虎',
-        content: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        no:5,
-        date: '2016-05-08',
-        name: '王小虎',
-        content: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        no:6,
-        date: '2016-05-06',
-        name: '王小虎',
-        content: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        no:7,
-        date: '2016-05-07',
-        name: '王小虎',
-        content: '上海市普陀区金沙江路 1518 弄'
-      }]
-      ,*/
+      //存储选择的垃圾邮件数据
       multipleSelection: []
     };
   },
+  //初始化界面时加载邮件数据
   mounted(){
      this.getJsonData();
-     alert(this.tableData);
   },
   methods: {
+    //获取选择的邮件序号
     getchooseNo(mul){
       let no = [];
       for(var i = 0;i<mul.length;i++){
@@ -146,11 +110,12 @@ export default {
       }
       return no;
     },
+    //读取本地json文件（用于测试，正式版本将从后台获取json文件)
     getJsonData(){
-      var url = 'http://localhost:8082/static/testTable.json';
+      var url = 'http://localhost:8080/static/testTable.json';
+      //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json数组
       this.$axios.get(url).then(
         res=>{
-            console.log(res.data)
             for(var i =0;i<res.data.length;i++){
               this.tableData.push(res.data[i])
             }
@@ -158,13 +123,15 @@ export default {
         }
       )
     },
+    //移动邮件至收件箱或者已发送
     move_btn(){
       if(this.value == "收件箱" && this.multipleSelection.length != 0){
-        let receiveNo = getchooseNo(this.multipleSelection);
+        let receiveNo = this.getchooseNo(this.multipleSelection);
 
         alert("已将邮件移至收件箱" + receiveNo);
+        //交互内容：传递选择的邮件序号，后台标记相应的邮件为收件箱的，返回一个alert作为结果
         this.$axios
-          .post('/receiveMail', {
+          .post('/rubbishMail', {
             chooseNo: receiveNo,
           })
           .then(successResponse => {
@@ -176,10 +143,10 @@ export default {
           })
       }
       else if(this.value =="已发送" && this.multipleSelection.length != 0){
-        let al_SendNo = getchooseNo(this.multipleSelection);
+        let al_SendNo = this.getchooseNo(this.multipleSelection);
 
         this.$axios
-          .post('/receiveMail', {
+          .post('/rubbishMail', {
             chooseNo: al_SendNo,
           })
           .then(successResponse => {
@@ -195,8 +162,9 @@ export default {
         alert("请选择移动的邮件和移至的地方");
       }
     },
+    //删除选择的邮件
     clear_btn(){
-      let deleteNo = getchooseNo(this.multipleSelection);
+      let deleteNo = this.getchooseNo(this.multipleSelection);
       this.$axios
         .post('/rubbishMail', {
           chooseNo: deleteNo,
@@ -213,6 +181,7 @@ export default {
           console.log(error);
         })
     },
+    //取消选择
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -222,12 +191,15 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+    //获取多选的邮件信息
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
+    //查看特定的邮件信息
     handleEdit(index) {
+      //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面
       this.$axios
-        .post('/lookMail', {
+        .post('/rubbishMail', {
            chooseNo: this.tableData[index].no,
         })
         .then(successResponse => {

@@ -24,19 +24,24 @@
           width="55">
         </el-table-column>
         <el-table-column
+          prop="no"
+          label="序号"
+          width="55">
+        </el-table-column>
+        <el-table-column
           prop="date"
           label="发送日期"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="receiver"
           label="收件人"
           width="120">
         </el-table-column>
         <el-table-column
           prop="content"
           label="主题"
-          width="800"
+          width="700"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column label="操作">
@@ -56,10 +61,10 @@
         </el-col>
         <el-col :span="2.5">
           <!--全部清空按钮 事件clearALL_btn-->
-          <el-button round @click="clear_btn">移至垃圾箱</el-button>
+          <el-button round @click="move2Rubbish">移至垃圾箱</el-button>
         </el-col>
         <el-col :span="2">
-          <el-button round @click="transmit_btn">转发</el-button>
+          <el-button round @click="transmit">转发</el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -70,21 +75,6 @@
   export default {
     data() {
       return {
-        sendMail_form: {
-          recieve_m: '', //收件人邮箱
-          mail_Title: '', //邮箱的主题
-          textarea: '' //邮件的内容
-        },
-        //rule规则
-        rules: {
-          recieve_m:[
-            { required: true,message: '请输入收件人地址', trigger: 'blur' },
-          ],
-          mail_Title:[
-            { required: true, message: '请输入邮件主题', trigger: 'blur' },
-
-          ],
-        },
         options:[
           {
             value:'收件箱',
@@ -95,57 +85,82 @@
           }
         ],
         value:'',
-        tableData: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }],
+        tableData: [],
         multipleSelection: []
       };
     },
-    created() {},
+    mounted(){
+      this.getJsonData();
+    },
     methods: {
-      send_btn() {
-        //发送邮件
+      //获取选择的邮件序号
+      getchooseNo(mul){
+        let no = [];
+        for(var i = 0;i<mul.length;i++){
+          no.push(mul[i].no)
+        }
+        return no;
       },
-      transmit_btn() {
-        console.log(this.multipleSelection);
-        this.$router.push("/sendMail");
+      //转发
+      transmit() {
+        let chooseNo = this.getchooseNo(this.multipleSelection);
+        if(chooseNo.length != 1){
+          alert("转发的邮件数量必须为1")
+        }
+        else{
+          this.$axios
+            .post('/draftMail', {
+              chooseNo: chooseNo,
+            })
+            .then(successResponse => {
+              if(successResponse.data.code === 200){
+                this.$router.push({path:'/sendMail',query:{
+                  id : chooseNo
+                }})
+              }
+              else{
+                alert('转发邮件失败');
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+        }
       },
-      cancel_btn() {
-        //取消
+      //读取本地json文件（用于测试，正式版本将从后台获取json文件)
+      getJsonData(){
+        var url = 'http://localhost:8080/static/testSended.json';
+        //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json数组
+        this.$axios.get(url).then(
+          res=>{
+            for(var i =0;i<res.data.length;i++){
+              this.tableData.push(res.data[i])
+            }
+            console.log(this.tableData)
+          }
+        )
       },
-      chooseOne(){},
-      clear_btn(){
-        console.log(this.multipleSelection);
+      //移动选择的邮件
+      move2Rubbish(){
+        let deleteNo = this.getchooseNo(this.multipleSelection);
+        //交互内容：传递选择的邮件序号，后台修改相应邮件的所属为rubbish，且删除al_send内的相同邮件数据
+        this.$axios
+          .post('/Al_send', {
+            chooseNo: deleteNo,
+          })
+          .then(successResponse => {
+            if(successResponse.data.code === 200){
+              alert('已移动邮件至垃圾箱')
+            }
+            else{
+              alert('移动邮件失败');
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
-      clearALL_btn(){
-        this.tableData = [];
-      },
+      //取消选择
       toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {
@@ -155,13 +170,30 @@
           this.$refs.multipleTable.clearSelection();
         }
       },
+      //获取多选的邮件信息
       handleSelectionChange(val) {
         this.multipleSelection = val;
-
       },
-      handleEdit(index, row) {
-        alert(index);
-        this.$router.push("/lookMail");
+      //查看特定的邮件信息
+      handleEdit(index) {
+        //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面
+        this.$axios
+          .post('/lookMail', {
+            chooseNo: this.tableData[index].no,
+          })
+          .then(successResponse => {
+            if(successResponse.data.code === 200){
+              this.$router.push({path:'/lookMail',query:{
+                id : this.tableData[index].no
+              }})
+            }
+            else{
+              alert('查看邮件失败');
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
     }
   };

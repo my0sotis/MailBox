@@ -23,19 +23,24 @@
           width="55">
         </el-table-column>
         <el-table-column
+          prop="no"
+          label="序号"
+          width="55">
+        </el-table-column>
+        <el-table-column
           prop="date"
           label="发送日期"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="sender"
           label="发件人"
           width="120">
         </el-table-column>
         <el-table-column
           prop="content"
           label="主题"
-          width="800"
+          width="700"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column label="操作">
@@ -54,11 +59,11 @@
           <el-button round @click="toggleSelection()">取消选择</el-button>
         </el-col>
         <el-col :span="2.5">
-          <el-button round @click="move2rubbish_btn">移至垃圾箱</el-button>
+          <el-button round @click="move2Rubbish">移至垃圾箱</el-button>
         </el-col>
         <el-col :span="2">
           <!--转发-->
-          <el-button round @click="transmit_btn">转发</el-button>
+          <el-button round @click="transmit">转发</el-button>
         </el-col>
       </el-row>
     </el-card>
@@ -70,42 +75,82 @@
     data() {
       return {
         value:'',
-        tableData: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          content: '上海市普陀区金沙江路 1518 弄'
-        }],
+        tableData: [],
         multipleSelection: []
       };
     },
+    //初始化界面时加载邮件数据
+    mounted(){
+      this.getJsonData();
+    },
     methods: {
-      move2rubbish_btn(){
-        console.log(this.multipleSelection);
+      //获取选择的邮件序号
+      getchooseNo(mul){
+        let no = [];
+        for(var i = 0;i<mul.length;i++){
+          no.push(mul[i].no)
+        }
+        return no;
       },
+      //转发
+      transmit() {
+        let chooseNo = this.getchooseNo(this.multipleSelection);
+        if(chooseNo.length != 1){
+          alert("转发的邮件数量必须为1")
+        }
+        else{
+          this.$axios
+            .post('/draftMail', {
+              chooseNo: chooseNo,
+            })
+            .then(successResponse => {
+              if(successResponse.data.code === 200){
+                this.$router.push({path:'/sendMail',query:{
+                  id : chooseNo
+                }})
+              }
+              else{
+                alert('转发邮件失败');
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            })
+        }
+      },
+      move2Rubbish(){
+        let deleteNo = this.getchooseNo(this.multipleSelection);
+        //交互内容：传递选择的邮件序号，后台修改相应邮件的所属为rubbish，且删除Receive内的相同邮件数据
+        this.$axios
+          .post('/recieveMail', {
+            chooseNo: deleteNo,
+          })
+          .then(successResponse => {
+            if(successResponse.data.code === 200){
+              alert('已移动邮件至垃圾箱')
+            }
+            else{
+              alert('移动邮件失败');
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      },
+      //读取本地json文件（用于测试，正式版本将从后台获取json文件)
+      getJsonData(){
+        var url = 'http://localhost:8080/static/testReceive.json';
+        //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json数组
+        this.$axios.get(url).then(
+          res=>{
+            for(var i =0;i<res.data.length;i++){
+              this.tableData.push(res.data[i])
+            }
+            console.log(this.tableData)
+          }
+        )
+      },
+      //取消选择
       toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {
@@ -115,13 +160,31 @@
           this.$refs.multipleTable.clearSelection();
         }
       },
+      //获取多选的邮件信息
       handleSelectionChange(val) {
         this.multipleSelection = val;
-        console.log(val);
       },
-      handleEdit(index, row) {
-        alert(index);
-        this.$router.push("/lookMail");
+      //查看特定的邮件信息
+      handleEdit(index) {
+        //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面，注意，receive呈现的内容是发件人，与其他
+        //页面不同，处理数据时要传递发件人的数据
+        this.$axios
+          .post('/recieveMail', {
+            chooseNo: this.tableData[index].no,
+          })
+          .then(successResponse => {
+            if(successResponse.data.code === 200){
+              this.$router.push({path:'/lookMail',query:{
+                id : this.tableData[index].no
+              }})
+            }
+            else{
+              alert('查看邮件失败');
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
     }
   };
