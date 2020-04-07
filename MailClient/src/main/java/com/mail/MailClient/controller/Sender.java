@@ -47,8 +47,9 @@ public class Sender {
      * @param username 发件人邮箱
      */
     public Result setServerInfo(String username) {
+        Result result = new Result(0);
         if (null == username || !username.contains("@")) {
-            return new Result(0);
+            return result;
         }
         SMTPServer.initServer();
         //邮箱后缀
@@ -56,10 +57,14 @@ public class Sender {
         for (Map.Entry<String, Integer> entry : SMTPServer.smtpServer.entrySet()) {
             if (entry.getKey().contains(suffix)) {
                 smtp = entry;
+                result.setCode(250);
                 break;
             }
         }
-        return new Result(250);
+        if (result.getCode() != 250) {
+            result.setCode(4);
+        }
+        return result;
     }
 
     /**
@@ -358,9 +363,11 @@ public class Sender {
     }
 
     public static void main(String[] args) {
-        String[] to = {"1274034280@qq.com"};
+        // Receiver Mail
+        String[] to = {""};
         String[] a = {};
-        Mail mail = new Mail("2017302580244@whu.edu.cn", "zpc888wsadjkl,./", to, null,
+        // Sender Mail
+        Mail mail = new Mail("", "", to, null,
                 null, "CC Test Mail!! 哈哈", "\"这是一个测试，请不要回复！\"", a);
         Sender sender = new Sender(mail);
         System.out.println(sender.sendMail().getCode());
