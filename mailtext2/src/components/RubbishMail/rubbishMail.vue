@@ -32,12 +32,12 @@
           <el-table-column
             prop="sender"
             label="发件人"
-            width="120">
+            width="250">
           </el-table-column>
           <el-table-column
-            prop="content"
+            prop="theme"
             label="主题"
-            width="700"
+            width="600"
             show-overflow-tooltip>
           </el-table-column>
           <el-table-column label="操作">
@@ -89,7 +89,11 @@ export default {
       }, {
         value: '已发送',
         label: '已发送'
-      }],
+      },
+        {
+          value: '垃圾箱',
+          label: '垃圾箱'
+        }],
       value: '',
       //接收垃圾邮件的数组
       tableData : [],
@@ -101,6 +105,7 @@ export default {
   mounted(){
      this.getJsonData();
   },
+  //可能还需要单独写一个后台修改数据后，前端同步修改的方法
   methods: {
     //获取选择的邮件序号
     getchooseNo(mul){
@@ -110,7 +115,7 @@ export default {
       }
       return no;
     },
-    //读取本地json文件（用于测试，正式版本将从后台获取json文件)
+    //读取本地json文件（用于测试，正式版本将从后台获取json数组对象)
     getJsonData(){
       var url = 'http://localhost:8080/static/testTable.json';
       //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json数组
@@ -127,7 +132,6 @@ export default {
     move_btn(){
       if(this.value == "收件箱" && this.multipleSelection.length != 0){
         let receiveNo = this.getchooseNo(this.multipleSelection);
-
         alert("已将邮件移至收件箱" + receiveNo);
         //交互内容：传递选择的邮件序号，后台标记相应的邮件为收件箱的，返回一个alert作为结果
         this.$axios
@@ -144,7 +148,6 @@ export default {
       }
       else if(this.value =="已发送" && this.multipleSelection.length != 0){
         let al_SendNo = this.getchooseNo(this.multipleSelection);
-
         this.$axios
           .post('/rubbishMail', {
             chooseNo: al_SendNo,
@@ -165,6 +168,7 @@ export default {
     //删除选择的邮件
     clear_btn(){
       let deleteNo = this.getchooseNo(this.multipleSelection);
+      //交互内容：传递参数deleteNo邮件序号，后台删除相同序号的邮件
       this.$axios
         .post('/rubbishMail', {
           chooseNo: deleteNo,
@@ -197,8 +201,13 @@ export default {
     },
     //查看特定的邮件信息
     handleEdit(index) {
+    //测试部分
+      this.$router.push({path:'/lookMail',query:{
+                 id : this.tableData[index].no
+               }})
+
       //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面
-      this.$axios
+      /*this.$axios
         .post('/rubbishMail', {
            chooseNo: this.tableData[index].no,
         })
@@ -214,7 +223,7 @@ export default {
         })
         .catch(function (error) {
             console.log(error);
-        })
+        })*/
     },
   }
 };

@@ -35,12 +35,12 @@
         <el-table-column
           prop="sender"
           label="发件人"
-          width="120">
+          width="250">
         </el-table-column>
         <el-table-column
-          prop="content"
+          prop="theme"
           label="主题"
-          width="700"
+          width="600"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column label="操作">
@@ -83,6 +83,7 @@
     mounted(){
       this.getJsonData();
     },
+    //可能还需要单独写一个后台修改数据后，前端同步修改的方法
     methods: {
       //获取选择的邮件序号
       getchooseNo(mul){
@@ -99,6 +100,7 @@
           alert("转发的邮件数量必须为1")
         }
         else{
+          //交互内容：传递需要转发的邮件序号，成功即打开发送邮件的界面，同时获取相关邮件信息
           this.$axios
             .post('/draftMail', {
               chooseNo: chooseNo,
@@ -118,6 +120,7 @@
             })
         }
       },
+      //移至垃圾箱
       move2Rubbish(){
         let deleteNo = this.getchooseNo(this.multipleSelection);
         //交互内容：传递选择的邮件序号，后台修改相应邮件的所属为rubbish，且删除Receive内的相同邮件数据

@@ -36,12 +36,12 @@
         <el-table-column
           prop="receiver"
           label="收件人"
-          width="120">
+          width="250">
         </el-table-column>
         <el-table-column
-          prop="content"
+          prop="theme"
           label="主题"
-          width="700"
+          width="600"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column label="操作">
@@ -75,16 +75,6 @@
   export default {
     data() {
       return {
-        options:[
-          {
-            value:'收件箱',
-            label:'收件箱'
-          },{
-            value:'已发送',
-            label:'已发送'
-          }
-        ],
-        value:'',
         tableData: [],
         multipleSelection: []
       };
@@ -176,6 +166,11 @@
       },
       //查看特定的邮件信息
       handleEdit(index) {
+        //测试部分
+        this.$router.push({path:'/lookMail',query:{
+          id : this.tableData[index].no
+        }})
+        /*
         //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面
         this.$axios
           .post('/lookMail', {
@@ -193,7 +188,7 @@
           })
           .catch(function (error) {
             console.log(error);
-          })
+          })*/
       },
     }
   };
