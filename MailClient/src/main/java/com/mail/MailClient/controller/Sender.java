@@ -3,12 +3,20 @@ package com.mail.MailClient.controller;
 import com.mail.MailClient.entity.Mail;
 import com.mail.MailClient.entity.SMTPServer;
 import com.mail.MailClient.entity.Result;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * @author Mavericks
@@ -68,20 +76,21 @@ public class Sender {
     }
 
     /**
+     * 设置附件路径
+     */
+    public void transform(String[] paths){
+        currentMail.setAttachments(paths);
+    }
+
+    /**
      * 添加附件
      */
-    public void addAttachment(String filePath) {
-        addAttachment(filePath, null);
-    }
-    public void addAttachment(String filePath, String charset) {
-        if (null != filePath && filePath.length() > 0) {
-            File file = new File(filePath);
-            try {
-                addAttachment(file.getName(), new FileInputStream(file), charset);
-            } catch (FileNotFoundException e) {
-                System.out.println("错误：" + e.getMessage());
-                System.exit(1);
-            }
+    public void addAttachment(String path, String charset) {
+        try {
+            File f = new File(path);
+            addAttachment(f.getName(), new FileInputStream(f), charset);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
     public void addAttachment(String fileName, InputStream attachmentStream, String charset) {
@@ -240,8 +249,9 @@ public class Sender {
         String[] attachments = currentMail.getAttachments();
         if(attachments != null)
         {
-            for(String path : attachments) {
-                addAttachment(path);
+            for(String file : attachments) {
+                if(file != null)
+                    addAttachment(file, null);
             }
         }
 
@@ -364,12 +374,14 @@ public class Sender {
 
     public static void main(String[] args) {
         // Receiver Mail
-        String[] to = {""};
-        String[] a = {};
-        // Sender Mail
-        Mail mail = new Mail("", "", to, null,
-                null, "CC Test Mail!! 哈哈", "\"这是一个测试，请不要回复！\"", a);
-        Sender sender = new Sender(mail);
-        System.out.println(sender.sendMail().getCode());
+//        String[] to = {""};
+//        String[] a = {"E:\\图片\\avater.jpg"};
+//
+//        // Sender Mail
+//        Mail mail = new Mail("", "", to, null,
+//                null, "CC Test Mail!! 哈哈", "\"这是一个测试，请不要回复！\"", file);
+//        Sender sender = new Sender(mail);
+//        System.out.println(sender.sendMail().getCode());
+        System.out.println(System.getProperty("user.dir"));
     }
 }
