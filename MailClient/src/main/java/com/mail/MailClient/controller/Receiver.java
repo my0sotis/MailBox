@@ -1,11 +1,11 @@
 package com.mail.MailClient.controller;
 
+import com.mail.MailClient.entity.Mail;
 import com.mail.MailClient.entity.POPServer;
 import com.mail.MailClient.entity.Result;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -19,6 +19,8 @@ public class Receiver {
     private Map.Entry<String, Integer> pop;
     private Socket popSocket;
     boolean isDebug = false;
+    private BufferedReader in = null;
+    private BufferedWriter out = null;
 
     public Receiver(String username, String password) {
         this.username = username;
@@ -163,7 +165,13 @@ public class Receiver {
         System.out.println(message);
     }
 
-
+    /**
+     * 有参List命令
+     * @param mailNum 需要查看的邮件号
+     * @param in 输入流
+     * @param out 输出流
+     * @throws IOException 报错
+     */
     public void listOne(int mailNum, BufferedReader in, BufferedWriter out) throws IOException {
         String result;
         result = getResult(sendServer("list " + mailNum, in, out));
@@ -173,6 +181,11 @@ public class Receiver {
         }
     }
 
+    /**
+     * 获取邮件的具体内容
+     * @param in 输入流
+     * @return 邮件内容
+     */
     public String getMessageDetail(BufferedReader in) {
         StringBuilder message = new StringBuilder();
         String line;
@@ -182,13 +195,19 @@ public class Receiver {
                 message.append(line).append("\n");
                 line = in.readLine();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return message.toString();
     }
 
+    /**
+     * retr命令
+     * @param mailNum 邮件编号
+     * @param in 输入流
+     * @param out 输出流
+     * @return 邮件具体信息
+     */
     public String retr(int mailNum, BufferedReader in, BufferedWriter out) throws IOException, InterruptedException {
         String result;
         result = getResult(sendServer("retr " + mailNum, in, out));
@@ -201,6 +220,28 @@ public class Receiver {
         return result;
     }
 
+    /**
+     * 删除邮件
+     * @param mailNum 要操作的邮件编号
+     * @param in 输入流
+     * @param out 输出流
+     * @throws IOException 报错
+     */
+    public void dele(int mailNum, BufferedReader in, BufferedWriter out) throws IOException {
+        String result;
+        result = getResult(sendServer("dele " + mailNum, in, out));
+        if (!OK.equals(result)) {
+            // 删除邮件时出错
+            throw new IOException("10");
+        }
+    }
+
+    /**
+     * 退出邮箱
+     * @param in 输入流
+     * @param out 输出流
+     * @throws IOException 报错
+     */
     public void quit(BufferedReader in, BufferedWriter out) throws IOException {
         String result;
         result = getResult(sendServer("QUIT", in, out));
@@ -210,22 +251,83 @@ public class Receiver {
         }
     }
 
-    public Result receiveMail() throws IOException {
+    private void printErrorString(String str) {
+        switch (str) {
+            case "0":
+                System.out.println("用户名错误");
+                break;
+            case "1":
+                System.out.println("连接邮箱服务器失败");
+                break;
+            case "2":
+                System.out.println("登陆失败");
+                break;
+            case "3":
+                System.out.println("发送失败");
+                break;
+            case "4":
+                System.out.println("未收录对应邮箱SMTP或POP3地址");
+                break;
+            case "5":
+                System.out.println("密码错误");
+                break;
+            case "6":
+                System.out.println("查看邮箱状态出错");
+                break;
+            case "7":
+                System.out.println("list出错");
+                break;
+            case "8":
+                System.out.println("接收邮件出错");
+                break;
+            case "9":
+                System.out.println("未能正确退出");
+                break;
+            default:
+                System.out.println(str);
+                break;
+        }
+    }
+
+//    private Mail processMailInfo(String string) {
+//        Mail mail = new Mail();
+//        return mail;
+//    }
+
+    public Result receiveMail() {
         Result result = new Result(0);
         // 设置POP3服务器
         if (setServerInfo(username).getCode() != 250) {
+            System.out.println(result.getCode());
             return result;
         }
         result = POP3Client();
         if (result.getCode() != 250) {
+            System.out.println(result.getCode());
             return result;
         }
-        BufferedReader in = new BufferedReader(new InputStreamReader(popSocket.getInputStream()));
-        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(popSocket.getOutputStream()));
-        user(username, in, out);
-        pass(password,in,out);
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(popSocket.getInputStream()));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(popSocket.getOutputStream()));
+            user(username, in, out);
+            pass(password,in,out);
+//            int mailNum = stat(in, out);
+//            for (int i = 1; i <= mailNum; i++) {
+//                System.out.println(retr(i, in, out));
+//            }
+//            System.out.println(processMailInfo(retr(1, in, out)));
+            quit(in, out);
+        } catch (IOException e) {
+            printErrorString(e.getMessage());
+        }
+
 
         result.setCode(250);
         return result;
+    }
+
+    public static void main(String[] args) {
+        Receiver receiver = new Receiver("2017302580244@whu.edu.cn", "zpc888wsadjkl,./");
+        receiver.receiveMail();
     }
 }
