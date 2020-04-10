@@ -27,27 +27,92 @@
       </el-row>
 
       <!-- 收件人 主题 区域 -->
-      <el-form :model="sendMail_form" :rules="rules"  class="senMail-container"  label-position="left"  label-width="0px">
+      <el-form
+        :model="sendMail_form"
+        :rules="rules"
+        class="senMail-container"
+        label-position="left"
+        label-width="0px"
+      >
         <el-row :gutter="10">
           <el-col :span="10">
+<<<<<<< Updated upstream
             <el-form-item  prop="recieve_m">
               <el-input type="text" prefix-icon="el-icon-message" placeholder="邮件地址" v-model="sendMail_form.recieve_m">
               </el-input>
+=======
+            <el-form-item prop="recieve_m">
+              <el-input
+                type="text"
+                prefix-icon="el-icon-message"
+                placeholder="邮件地址"
+                v-model="sendMail_form.to"
+              ></el-input>
+>>>>>>> Stashed changes
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="10">
+<<<<<<< Updated upstream
             <el-form-item  prop="mail_Title">
               <el-input type="text"  prefix-icon="el-icon-edit" placeholder="邮件主题内容" v-model="sendMail_form.mail_Title"></el-input>
+=======
+            <el-form-item prop="mail_Title">
+              <el-input
+                type="text"
+                prefix-icon="el-icon-edit"
+                placeholder="邮件主题内容"
+                v-model="sendMail_form.subject"
+              ></el-input>
+>>>>>>> Stashed changes
             </el-form-item>
-            </el-col>
+          </el-col>
         </el-row>
         <!-- 邮件的正式内容 -->
+<<<<<<< Updated upstream
         <el-form-item  prop="textarea">
           <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="sendMail_form.textarea"></el-input>
         </el-form-item>      
         </el-form>
+=======
+        <el-form-item prop="textarea">
+          <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="sendMail_form.content"></el-input>
+        </el-form-item>
+      </el-form>
+
+      <!-- <input type="file" @change="getFile($event)" multiple="multiple" />
+      <button class="button button-primary button-pill button-small" @click="submit($event)">提交</button>-->
+
+      <!-- 上传附件 -->
+      <el-button
+        icon="el-icon-document-copy"
+        type="primary"
+        round
+        size="small"
+        style="margin-left: 15px;"
+        @click="checkFile"
+      >选择文件</el-button>
+      <span>{{fileName}}</span>
+      <input
+        type="file"
+        id="fileinput"
+        style="display: none;"
+        @change="getFile($event)"
+        multiple="multiple"
+      />
+      <div>
+        <el-button
+          class="submit_btn"
+          icon="el-icon-upload2"
+          type="primary"
+          round
+          size="small"
+          style="margin-left: 15px;"
+          @click="submit($event)"
+        >提交</el-button>
+      </div>
+>>>>>>> Stashed changes
 
       <!-- 后两个按钮区域 -->
       <el-row :gutter="10" class="bottom_btns">
@@ -66,6 +131,7 @@
 export default {
   data() {
     return {
+<<<<<<< Updated upstream
       sendMail_form: {
         recieve_m: '', //收件人邮箱
         mail_Title: '', //邮箱的主题
@@ -84,8 +150,115 @@ export default {
     };
   },
   created() {},
+=======
+      fileName: "",
+      //修改了名称
+      sendMail_form: {
+        username: "",
+        password: "",
+        cc: [""],
+        bcc: [""],
+        to: "", //收件人邮箱
+        subject: "", //邮箱的主题
+        content: "" //邮件的内容
+      },
+      //rule规则
+      rules: {
+        recieve_m: [
+          { required: true, message: "请输入收件人地址", trigger: "blur" }
+        ],
+        mail_Title: [
+          { required: true, message: "请输入邮件主题", trigger: "blur" }
+        ]
+      },
+      replyNo: "",
+      chooseNo: "", //邮件的编号
+      //
+      file: "",
+      responseResult: []
+    };
+  },
+  created() {
+    this.sendChooseNo();
+
+    //这部分是从查看邮件进行回复时跳转到的发送界面，回复邮件时自动把收件人和主题给补上，仅用于测试
+    //正式版本在此使用axios从后台接收的邮件信息，传递的数据是replyNo，即邮件序号，返回的信息同测试版本一样
+    // if (this.$route.query != null) {
+    //   this.replyNo = this.$route.query["id"][0];
+    //   this.sendMail_form["reciever"] = "876700669@qq.com";
+    //   this.sendMail_form["theme"] = "回复：" + "原邮件主题";
+    // }
+    //此外还有转发界面也会带着邮件序号进行跳转，这部分需要单独处理一下，具体可以参考lookMail.vue中如何获取上一个界面的URL进行判断
+    //所以不能仅仅通过query来判断是否补充相关内容，需要判断上一个界面上是否具有相关的转发或者回复功能来补充
+    //上面代码考虑不周，需要改进
+  },
+>>>>>>> Stashed changes
   methods: {
+    //读取本地json文件（用于测试，正式版本将从后台获取json文件)
+    //获取当前界面的URL中的邮件序号
+    sendChooseNo() {
+      let chooseNo = this.$route.query["id"]; //取得的query['id']是数组
+      let judge = this.$route.query["judge"];
+      this.chooseNo = chooseNo[0];
+      console.log(this.chooseNo);
+      // judge  0 为 回复   1 为转发
+      if (judge == "0") {
+        //测试部分，仅测试序号为1的邮件数据
+        if (this.chooseNo == "1") {
+          var url = "http://localhost:8080/static/testLook.json";
+          //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json对象
+          this.$axios.get(url).then(res => {
+            //只需要填充收件人(回复邮件的时候)
+            this.sendMail_form.to = res.data["sender"];
+            //this.sendMail_form.subject = res.data["theme"]
+            // this.sendMail_form.date = res.data["date"]
+            // this.sendMail_form.content = res.data["content"]
+          });
+        } else {
+          console.log("error!!!!");
+        }
+        //正式版本
+        //交互内容：传递邮件序号到后台，后台返回一个json对象，不是数组
+        /*
+        this.$axios
+        .post('/lookMail', {
+          chooseNo: this.chooseNo,
+        })
+        .then(res => {
+          if(res != null){
+            //返回一个json对象
+          }
+          else{
+            alert('查看邮件失败');
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        })*/
+      }else if(judge == '1'){
+        //测试部分，仅测试序号为1的邮件数据
+        if (this.chooseNo == "1") {
+          var url = "http://localhost:8080/static/testLook.json";
+          //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json对象
+          this.$axios.get(url).then(res => {
+            //只需要填充收件人(回复邮件的时候)
+            this.sendMail_form.to = res.data["sender"];
+            this.sendMail_form.subject = res.data["theme"]
+            //this.sendMail_form.date = res.data["date"]
+            this.sendMail_form.content = res.data["content"]
+          });
+        } else {
+          console.log("error!!!!");
+        }
+      }
+    },
     send_btn() {
+      //首先把用户名密码输入进去
+      this.sendMail_form.username = localStorage.getItem("login_username");
+      this.sendMail_form.password = localStorage.getItem("login_password");
+      // console.log('sendmail',this.sendMail_form.username)
+      // console.log('sendmail',this.sendMail_form.password)
+
       //发送邮件
     },
     storeDraft_btn() {
@@ -93,7 +266,45 @@ export default {
     },
     cancel_btn() {
       //取消
+    },
+
+    //选择文件的按钮
+    checkFile() {
+      document.querySelector("#fileinput").click();
+      //this.fileName = document.querySelector("#fileinput").files[0].name;
+    }, //input
+    getFile: function(event) {
+      this.file = event.target.files;
+      this.fileName = this.file[0].name;
+      //console.log("input"+this.file[0].name)
+    }, //提交按钮
+    submit: function(event) {
+      //组织元素发生默认的行为
+      event.preventDefault();
+      let formData = new FormData();
+      for (let i = 0; i < this.file.length; i++)
+        formData.append("file", this.file[i]);
+      this.$axios.post("/attachments", formData).catch(failResponse => {});
+
+      this.$axios
+        .post("/mail", {
+          username: this.mailForm.username,
+          password: this.mailForm.password,
+          to: this.mailForm.to,
+          cc: this.mailForm.cc,
+          bcc: this.mailForm.bcc,
+          subject: this.mailForm.subject,
+          content: this.mailForm.content,
+          attachments: null
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 250) {
+            this.$router.replace({ path: "/index" });
+          }
+        })
+        .catch(failResponse => {});
     }
+
   }
 };
 </script>>
@@ -110,4 +321,11 @@ export default {
   margin-top: 10px;
   align-items: center;
 }
+<<<<<<< Updated upstream
 </style>>
+=======
+.submit_btn {
+  margin-top: 10px;
+}
+</style>>
+>>>>>>> Stashed changes

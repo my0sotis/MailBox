@@ -30,6 +30,7 @@
 
 // 登陆功能跳转都没做
 <script>
+import {mState} from 'vuex'
   export default {
     name: 'Login',
     data () {
@@ -55,8 +56,19 @@
     methods: {
       //登陆操作的函数
       login () {
+        
+        // //测试传输数据
+        localStorage.setItem('login_username',this.loginForm.username)
+        localStorage.setItem('login_password',this.loginForm.password)
+        // this.$store.commit('set_username',this.loginForm.username)
+        // console.log('login',this.loginForm.username)
+        // this.bus.$emit("username",this.loginForm.username)
+        // console.log(this.loginForm.username)
+        // this.bus.$emit("password",this.loginForm.password)
+
         //测试 切换界面
         this.$router.push("/home"),
+
         this.$axios
           .post('/login', {
             username: this.loginForm.username,
@@ -78,7 +90,10 @@
       resetloginForm(){
         this.$refs.loginFormRef.resetFields();
       }
-    }
+    },
+    // computed:mState({
+
+    // })
   }
 </script>
 

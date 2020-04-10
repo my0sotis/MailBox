@@ -19,6 +19,9 @@ Vue.prototype.$axios = axios
 
 Vue.use(ElementUI)
 
+// //BUS数据传输
+// Vue.prototype.bus = new Vue();
+
 
 //查看store里是否有user信息 
 router.beforeEach((to, from, next) => {
