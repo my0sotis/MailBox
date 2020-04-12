@@ -317,7 +317,7 @@ public class Receiver {
     }
 
     public static void main(String[] args) {
-        Receiver receiver = new Receiver("2017302580244@whu.edu.cn", "zpc888wsadjkl,./");
+        Receiver receiver = new Receiver("", "");
         receiver.receiveMail();
     }
 }
