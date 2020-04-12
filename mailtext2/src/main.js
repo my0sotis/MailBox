@@ -16,14 +16,15 @@ var axios = require('axios')
 axios.defaults.baseURL = 'http://localhost:8443/api'
 // 全局注册，之后可在其他组件中通过 this.$axios 发送数据
 Vue.prototype.$axios = axios
-
+//读取本地json
+Vue.config.productionTip = false
 Vue.use(ElementUI)
 
 // //BUS数据传输
 // Vue.prototype.bus = new Vue();
 
 
-//查看store里是否有user信息 
+//查看store里是否有user信息
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {
     if (store.state.user.username) {

@@ -35,11 +35,7 @@
           </el-menu-item>
           <el-menu-item index="/rubbishMail" @click="'/'+saveNavState(rubbishMail)">
             <i class="el-icon-menu"></i>
-            <span slot="title">垃圾邮件</span>
-          </el-menu-item>
-          <el-menu-item index="/lookMail" @click="'/'+saveNavState(lookMail)">
-            <i class="el-icon-menu"></i>
-            <span slot="title">查看邮件内容(暂时)</span>
+            <span slot="title">垃圾箱</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

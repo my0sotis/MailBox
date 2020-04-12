@@ -7,11 +7,11 @@
       <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
       <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
     </el-breadcrumb>
-    
+
     <!-- 卡片区域 -->
     <el-card>
       <!-- <div slot="header" class="navigation">
-        
+
       </div>-->
       <!-- 前三个按钮区域 -->
       <el-row :gutter="10" class="top_btns">
@@ -36,46 +36,31 @@
       >
         <el-row :gutter="10">
           <el-col :span="10">
-<<<<<<< Updated upstream
-            <el-form-item  prop="recieve_m">
-              <el-input type="text" prefix-icon="el-icon-message" placeholder="邮件地址" v-model="sendMail_form.recieve_m">
-              </el-input>
-=======
-            <el-form-item prop="recieve_m">
+            <el-form-item prop="to">
               <el-input
                 type="text"
                 prefix-icon="el-icon-message"
-                placeholder="邮件地址"
+                auto-complete="off"
+                placeholder="邮件地址(多个收件人用 ; 进行分割)"
                 v-model="sendMail_form.to"
               ></el-input>
->>>>>>> Stashed changes
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="10">
-<<<<<<< Updated upstream
-            <el-form-item  prop="mail_Title">
-              <el-input type="text"  prefix-icon="el-icon-edit" placeholder="邮件主题内容" v-model="sendMail_form.mail_Title"></el-input>
-=======
-            <el-form-item prop="mail_Title">
+            <el-form-item prop="subject">
               <el-input
                 type="text"
                 prefix-icon="el-icon-edit"
+                auto-complete="off"
                 placeholder="邮件主题内容"
                 v-model="sendMail_form.subject"
               ></el-input>
->>>>>>> Stashed changes
             </el-form-item>
           </el-col>
         </el-row>
         <!-- 邮件的正式内容 -->
-<<<<<<< Updated upstream
-        <el-form-item  prop="textarea">
-          <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="sendMail_form.textarea"></el-input>
-        </el-form-item>      
-        </el-form>
-=======
         <el-form-item prop="textarea">
           <el-input type="textarea" :rows="10" placeholder="请输入内容" v-model="sendMail_form.content"></el-input>
         </el-form-item>
@@ -101,7 +86,7 @@
         @change="getFile($event)"
         multiple="multiple"
       />
-      <div>
+      <!-- <div>
         <el-button
           class="submit_btn"
           icon="el-icon-upload2"
@@ -111,13 +96,12 @@
           style="margin-left: 15px;"
           @click="submit($event)"
         >提交</el-button>
-      </div>
->>>>>>> Stashed changes
+      </div> -->
 
       <!-- 后两个按钮区域 -->
       <el-row :gutter="10" class="bottom_btns">
         <el-col :span="2">
-          <el-button type="primary" round @click="send_btn">发送</el-button>
+          <el-button type="primary" icon="el-icon-upload2"  round @click="submit($event)">发送</el-button>
         </el-col>
         <el-col :span="2">
           <el-button round @click="cancel_btn">取消</el-button>
@@ -131,26 +115,6 @@
 export default {
   data() {
     return {
-<<<<<<< Updated upstream
-      sendMail_form: {
-        recieve_m: '', //收件人邮箱
-        mail_Title: '', //邮箱的主题
-        textarea: '' //邮件的内容
-      },
-        //rule规则
-        rules: {
-          recieve_m:[
-            { required: true,message: '请输入收件人地址', trigger: 'blur' },
-          ],
-          mail_Title:[
-            { required: true, message: '请输入邮件主题', trigger: 'blur' },
-            
-          ],
-        },
-    };
-  },
-  created() {},
-=======
       fileName: "",
       //修改了名称
       sendMail_form: {
@@ -158,20 +122,23 @@ export default {
         password: "",
         cc: [""],
         bcc: [""],
-        to: "", //收件人邮箱
+        to: [""], //收件人邮箱
         subject: "", //邮箱的主题
         content: "" //邮件的内容
       },
       //rule规则
       rules: {
-        recieve_m: [
-          { required: true, message: "请输入收件人地址", trigger: "blur" }
+        to: [
+          { required: true, message: "请输入收件人地址", trigger: "blur" },
+          { min: 10, max: 30, message: '长度不合理', trigger: 'blur' }
         ],
-        mail_Title: [
-          { required: true, message: "请输入邮件主题", trigger: "blur" }
+        subject: [
+          { required: true, message: "请输入邮件主题", trigger: "blur" },
+          { min: 3, max: 20, message: '长度不合理', trigger: 'blur' }
         ]
       },
       replyNo: "",
+      tolist:[""],
       chooseNo: "", //邮件的编号
       //
       file: "",
@@ -192,8 +159,16 @@ export default {
     //所以不能仅仅通过query来判断是否补充相关内容，需要判断上一个界面上是否具有相关的转发或者回复功能来补充
     //上面代码考虑不周，需要改进
   },
->>>>>>> Stashed changes
   methods: {
+    // handlefunc(){
+    //   let str=this.sendMail_form.to
+    //   console.log(str)
+    //   let strlist=str.split(';')
+    //   for(let i=0;strlist.length;i++){
+    //     //this.sendMail_form.to
+    //   }
+    // },
+
     //读取本地json文件（用于测试，正式版本将从后台获取json文件)
     //获取当前界面的URL中的邮件序号
     sendChooseNo() {
@@ -252,15 +227,15 @@ export default {
         }
       }
     },
-    send_btn() {
-      //首先把用户名密码输入进去
-      this.sendMail_form.username = localStorage.getItem("login_username");
-      this.sendMail_form.password = localStorage.getItem("login_password");
-      // console.log('sendmail',this.sendMail_form.username)
-      // console.log('sendmail',this.sendMail_form.password)
+    // send_btn() {
+    //   //首先把用户名密码输入进去
+    //   this.sendMail_form.username = localStorage.getItem("login_username");
+    //   this.sendMail_form.password = localStorage.getItem("login_password");
+    //   // console.log('sendmail',this.sendMail_form.username)
+    //   // console.log('sendmail',this.sendMail_form.password)
 
-      //发送邮件
-    },
+    //   //发送邮件
+    // },
     storeDraft_btn() {
       //草稿箱
     },
@@ -279,6 +254,19 @@ export default {
       //console.log("input"+this.file[0].name)
     }, //提交按钮
     submit: function(event) {
+      this.sendMail_form.username = localStorage.getItem("login_username");
+      this.sendMail_form.password = localStorage.getItem("login_password");
+
+
+      //处理收件人信息
+      let str=this.sendMail_form.to
+      console.log(str)
+      let strlist=str.split(';')
+      for(let i=0;i<strlist.length;i++){
+        this.tolist[i]=strlist[i];
+        console.log(this.tolist[i])
+      }
+
       //组织元素发生默认的行为
       event.preventDefault();
       let formData = new FormData();
@@ -288,13 +276,13 @@ export default {
 
       this.$axios
         .post("/mail", {
-          username: this.mailForm.username,
-          password: this.mailForm.password,
-          to: this.mailForm.to,
-          cc: this.mailForm.cc,
-          bcc: this.mailForm.bcc,
-          subject: this.mailForm.subject,
-          content: this.mailForm.content,
+          username: this.sendMail_form.username,
+          password: this.sendMail_form.password,
+          to: this.tolist,
+          cc: this.sendMail_form.cc,
+          bcc: this.sendMail_form.bcc,
+          subject: this.sendMail_form.subject,
+          content: this.sendMail_form.content,
           attachments: null
         })
         .then(successResponse => {
@@ -321,11 +309,7 @@ export default {
   margin-top: 10px;
   align-items: center;
 }
-<<<<<<< Updated upstream
-</style>>
-=======
 .submit_btn {
   margin-top: 10px;
 }
 </style>>
->>>>>>> Stashed changes

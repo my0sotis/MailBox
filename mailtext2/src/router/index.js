@@ -32,11 +32,11 @@ export default new Router({
         { path: '/welcome', name: 'Welcome', component: Welcome },
 
         { path: '/sendMail', name: 'SendMail', component: SendMail },
-        { path: '/recieveMail', name: 'RecieveMail', component: RecieveMail },
-        { path: '/draftMail', name: 'DraftMail', component: DraftMail },
-        { path: '/al_send', name: 'Al_send', component: Al_send },
-        { path: '/rubbishMail', name: 'RubbishMail', component: RubbishMail },
-        { path: '/lookMail', name: 'LookMail', component: LookMail },
+        { path: '/recieveMail', name: 'RecieveMail', component: RecieveMail,meta:{title:'收件箱'} },
+        { path: '/draftMail', name: 'DraftMail', component: DraftMail,meta:{title:'草稿箱'} },
+        { path: '/al_send', name: 'Al_send', component: Al_send,meta:{title:'已发送'} },
+        { path: '/rubbishMail', name: 'RubbishMail', component: RubbishMail,meta:{title:'垃圾箱'} },
+        { path: '/lookMail', name: 'LookMail', component: LookMail,meta:{title:'查看邮件'} },
       ]
     }
   ]
