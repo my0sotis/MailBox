@@ -243,12 +243,7 @@ public class Receiver {
      * @throws IOException 报错
      */
     public void quit(BufferedReader in, BufferedWriter out) throws IOException {
-        String result;
-        result = getResult(sendServer("QUIT", in, out));
-        if (!OK.equals(result)) {
-            // 未能正确退出
-            throw new IOException("9");
-        }
+        sendServer("QUIT", in, out);
     }
 
     private void printErrorString(String str) {
@@ -289,11 +284,6 @@ public class Receiver {
         }
     }
 
-//    private Mail processMailInfo(String string) {
-//        Mail mail = new Mail();
-//        return mail;
-//    }
-
     public Result receiveMail() {
         Result result = new Result(0);
         // 设置POP3服务器
@@ -311,13 +301,13 @@ public class Receiver {
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(popSocket.getOutputStream()));
             user(username, in, out);
             pass(password,in,out);
-//            int mailNum = stat(in, out);
-//            for (int i = 1; i <= mailNum; i++) {
-//                System.out.println(retr(i, in, out));
-//            }
-//            System.out.println(processMailInfo(retr(1, in, out)));
+            // Test Mode
+            FileOutputStream outputStream = new FileOutputStream(new File("./Samples/Sample4.txt"));
+            PrintStream printStream = new PrintStream(outputStream);
+            System.setOut(printStream);
+            System.out.println(retr(4, in, out));
             quit(in, out);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             printErrorString(e.getMessage());
         }
 
