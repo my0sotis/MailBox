@@ -23,27 +23,22 @@ public class SendController
     @CrossOrigin
     @PostMapping(value = "api/attachments") //定义访问REST端点的Request URI
     @ResponseBody
-    public void transform(MultipartFile[] file)
-    {
+    public void transform(MultipartFile[] file) {
         paths = new String[file.length];
-        for(int i = 0; i < file.length; i++)
-        {
-            try
-            {
+        for(int i = 0; i < file.length; i++) {
+            try {
                 byte[] bytes = file[i].getBytes();
                 String base = System.getProperty("user.dir") + "/";
                 Path path = Paths.get(base + file[i].getOriginalFilename());
                 //如果没有files文件夹，则创建
-                if (!Files.isWritable(path))
-                {
+                if (!Files.isWritable(path)) {
                     Files.createDirectories(Paths.get(System.getProperty("user.dir")));
                 }
                 //文件写入指定路径
                 Files.write(path, bytes);
                 paths[i] = base + file[i].getOriginalFilename();
             }
-            catch (IOException e)
-            {
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -51,7 +46,7 @@ public class SendController
 
     /**
      * 邮件发送
-     * @param
+     * @param mail target mail ready to be post
      * @return 返回码为250代表发送成功
      */
     @CrossOrigin

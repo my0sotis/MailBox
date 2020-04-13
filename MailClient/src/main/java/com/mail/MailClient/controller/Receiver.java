@@ -1,26 +1,38 @@
 package com.mail.MailClient.controller;
 
-import com.mail.MailClient.entity.Mail;
+import com.mail.MailClient.entity.BriefMail;
+import com.mail.MailClient.entity.CodeHelper;
 import com.mail.MailClient.entity.POPServer;
 import com.mail.MailClient.entity.Result;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Mavericks
  */
 public class Receiver {
     private final String OK = "+OK";
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     private Map.Entry<String, Integer> pop;
     private Socket popSocket;
     boolean isDebug = false;
-    private BufferedReader in = null;
-    private BufferedWriter out = null;
+    private final BufferedReader in = null;
+    private final BufferedWriter out = null;
+
+    private final static Pattern datePattern = Pattern.compile("^Date:\\s?(.+)$");
+    private final static Pattern fromPattern = Pattern.compile("^From:\\s?\"?([a-zA-Z0-9\\s=?/\\-.@]*)\"? (<(.+)>)?$");
+    private final static Pattern replyToPattern = Pattern.compile("^Reply-To:\\s?\"?([a-zA-Z0-9\\s=?/\\-.@]*)\"? (<(.+)>)?$");
+    private final static Pattern toPattern = Pattern.compile("^To:\\s?\"?([a-zA-Z0-9\\s=?/\\-.@]*)\"?\\s?(<(.+)>)?$");
+    private final static Pattern subjectPattern = Pattern.compile("^Subject:\\s?(.+)$");
+    private final Pattern mimeCodePattern = Pattern.compile("^=\\?([a-zA-Z0-9\\-]*)\\?([QBqb])\\?(.+)\\?=$");
 
     public Receiver(String username, String password) {
         this.username = username;
@@ -208,7 +220,7 @@ public class Receiver {
      * @param out 输出流
      * @return 邮件具体信息
      */
-    public String retr(int mailNum, BufferedReader in, BufferedWriter out) throws IOException, InterruptedException {
+    public String retr(int mailNum, BufferedReader in, BufferedWriter out) throws IOException {
         String result;
         result = getResult(sendServer("retr " + mailNum, in, out));
         if (!OK.equals(result)) {
@@ -216,7 +228,16 @@ public class Receiver {
             throw new IOException("8");
         }
         result = getMessageDetail(in);
-        Thread.sleep(3000);
+        return result;
+    }
+
+    public String top(int mailNum, int lineNum, BufferedReader in, BufferedWriter out) throws IOException {
+        String result;
+        result = getResult(sendServer("top " + mailNum + " " + lineNum, in, out));
+        if (!OK.equals(result)) {
+            throw new IOException("8");
+        }
+        result = getMessageDetail(in);
         return result;
     }
 
@@ -284,7 +305,110 @@ public class Receiver {
         }
     }
 
-    public Result receiveMail() {
+    /**
+     * 获取被解码的信息
+     * @param string Target String
+     * @return MIME Decoded String
+     */
+    private String getDecodedMsg(String string) {
+        Matcher matcher = mimeCodePattern.matcher(string);
+        if (matcher.find()) {
+            if ("Q".equalsIgnoreCase(matcher.group(2))) {
+                try {
+                    return CodeHelper.QPConvertCharset(matcher.group(3), matcher.group(1));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } else {
+                return CodeHelper.Base64ConvertCharset(matcher.group(3), matcher.group(1));
+            }
+        }
+        return null;
+    }
+
+    private BriefMail getBriefMailInfo(String mailInfo) {
+        BriefMail mail = new BriefMail();
+        String[] strings = mailInfo.split("\n");
+        List<String> list = new ArrayList<>();
+        for (String string : strings) {
+            if (!"".equals(string)) {
+                list.add(string.trim());
+            }
+        }
+        int i = 0;
+        // 是否获取到日期、发件人、回复地址、收件人、主题
+        boolean haveDate = false, haveFrom = false, haveReplyTo = false, haveTo = false, haveSubject = false;
+        // 日期
+        Matcher matcher, codeMatcher;
+        for (; i < list.size(); i++) {
+            if (haveDate && haveFrom && haveTo && haveSubject) {
+                break;
+            }
+            matcher = haveDate ? null : datePattern.matcher(list.get(i));
+            if (!haveDate && matcher.matches()) {
+                mail.setDatetime(matcher.group(1));
+                haveDate = true;
+                continue;
+            }
+            matcher = haveFrom ? null : fromPattern.matcher(list.get(i));
+            if (!haveFrom && matcher.matches()) {
+                String senderName = matcher.group(1).trim();
+                codeMatcher = mimeCodePattern.matcher(senderName);
+                if (codeMatcher.matches()) {
+                    senderName = getDecodedMsg(senderName);
+                }
+                mail.setSenderName(senderName);
+                mail.setSenderEmail(matcher.group(3));
+                haveFrom = true;
+                continue;
+            }
+            matcher = haveReplyTo ? null : replyToPattern.matcher(list.get(i));
+            if (!haveReplyTo && matcher.matches()) {
+                String replyToName = matcher.group(1).trim();
+                codeMatcher = mimeCodePattern.matcher(replyToName);
+                if (codeMatcher.matches()) {
+                    replyToName = getDecodedMsg(replyToName);
+                }
+                mail.setReplyToName(replyToName);
+                mail.setSenderEmail(matcher.group(3));
+                haveReplyTo = true;
+                continue;
+            }
+            matcher = haveTo ? null : toPattern.matcher(list.get(i));
+            if (!haveTo && matcher.matches()) {
+                String receiverName = matcher.group(1).trim();
+                codeMatcher = mimeCodePattern.matcher(receiverName);
+                if (codeMatcher.matches()) {
+                    receiverName = getDecodedMsg(receiverName);
+                }
+                mail.setReceiverName(receiverName);
+                String receiverEmail = matcher.group(3) == null ? receiverName : matcher.group(3);
+                mail.setSenderEmail(receiverEmail);
+                haveTo = true;
+                continue;
+            }
+            matcher = haveSubject ? null : subjectPattern.matcher(list.get(i));
+            if (!haveSubject && matcher.matches()) {
+                StringBuilder stringBuilder = new StringBuilder();
+                String tmpString = matcher.group(1);
+                codeMatcher = mimeCodePattern.matcher(tmpString);
+                if (!codeMatcher.matches()) { stringBuilder.append(tmpString); }
+                while (codeMatcher.matches()) {
+                    tmpString = getDecodedMsg(tmpString);
+                    stringBuilder.append(tmpString);
+                    i++;
+                    tmpString = list.get(i).trim();
+                    codeMatcher = mimeCodePattern.matcher(tmpString);
+                }
+                mail.setSubject(stringBuilder.toString());
+                haveSubject = true;
+            }
+        }
+        return mail;
+    }
+
+    public Result receiveMails() {
         Result result = new Result(0);
         // 设置POP3服务器
         if (setServerInfo(username).getCode() != 250) {
@@ -296,28 +420,28 @@ public class Receiver {
             System.out.println(result.getCode());
             return result;
         }
+        List<BriefMail> list = new ArrayList<>();
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(popSocket.getInputStream()));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(popSocket.getOutputStream()));
             user(username, in, out);
             pass(password,in,out);
-            // Test Mode
-            FileOutputStream outputStream = new FileOutputStream(new File("./Samples/Sample4.txt"));
-            PrintStream printStream = new PrintStream(outputStream);
-            System.setOut(printStream);
-            System.out.println(retr(4, in, out));
+            int mailNum = stat(in, out);
+            BriefMail mail;
+            for (int i = 1; i <= mailNum; i++) {
+                mail = getBriefMailInfo(top(i, 0, in, out));
+                list.add(mail);
+            }
             quit(in, out);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             printErrorString(e.getMessage());
         }
-
-
         result.setCode(250);
         return result;
     }
 
     public static void main(String[] args) {
         Receiver receiver = new Receiver("", "");
-        receiver.receiveMail();
+        receiver.receiveMails();
     }
 }

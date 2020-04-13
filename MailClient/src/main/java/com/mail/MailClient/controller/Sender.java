@@ -350,7 +350,7 @@ public class Sender {
         }
         catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             // 释放资源
             try {
                 if (null != socket) {
@@ -370,18 +370,5 @@ public class Sender {
             }
         }
         return new Result(250);
-    }
-
-    public static void main(String[] args) {
-        // Receiver Mail
-//        String[] to = {""};
-//        String[] a = {"E:\\图片\\avater.jpg"};
-//
-//        // Sender Mail
-//        Mail mail = new Mail("", "", to, null,
-//                null, "CC Test Mail!! 哈哈", "\"这是一个测试，请不要回复！\"", file);
-//        Sender sender = new Sender(mail);
-//        System.out.println(sender.sendMail().getCode());
-        System.out.println(System.getProperty("user.dir"));
     }
 }

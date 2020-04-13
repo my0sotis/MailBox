@@ -1,0 +1,155 @@
+Received: from msg.lib.whu.edu.cn (unknown [202.114.65.62])
+	by email1 (Coremail) with SMTP id AQBjCgB3mukJu59bIUNxBg--.30475S3;
+	Mon, 17 Sep 2018 22:32:41 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+	by msg.lib.whu.edu.cn (Postfix) with ESMTP id 9C65038068
+	for <2017302580234@whu.edu.cn>; Mon, 17 Sep 2018 22:32:41 +0800 (CST)
+X-Virus-Scanned: amavisd-new at msg.lib.whu.edu.cn
+Received: from msg.lib.whu.edu.cn ([127.0.0.1])
+	by localhost (msg.lib.whu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ZeB9az8piBiX for <2017302580234@whu.edu.cn>;
+	Mon, 17 Sep 2018 22:32:40 +0800 (CST)
+Received: from aleph01 (e6900a.lib.whu.edu.cn [202.114.65.214])
+	(Authenticated sender: exlibris@notify.lib.whu.edu.cn)
+	by msg.lib.whu.edu.cn (Postfix) with ESMTPA id E070A237C46
+	for <2017302580234@whu.edu.cn>; Mon, 17 Sep 2018 22:32:21 +0800 (CST)
+Message-ID: <26178438.1537194746523.JavaMail.aleph@aleph01>
+Date: Mon, 17 Sep 2018 22:32:26 +0800 (CST)
+From: Wuhan University Library <exlibris@notify.lib.whu.edu.cn>
+Reply-To: Wuhan University Library <exlibris@notify.lib.whu.edu.cn>
+To: 2017302580234@whu.edu.cn
+Subject: =?GBK?B?zuS6urTz0afNvMrpud3Tyrz+t/7O8dSk1LzH68fzyb6z/c2o1qo=?=
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_37_14894886.1537194746518"
+X-CM-TRANSID:AQBjCgB3mukJu59bIUNxBg--.30475S3
+Authentication-Results: email1; spf=none smtp.mail=exlibris@notify.lib
+	.whu.edu.cn;
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw15Kr1rZrWDXry7Wr1fXrb_yoW3CrX_Zw
+	18ur4DWFn7KrZ3Jas7Ary7Jr4vka4xGFy5A3Z7WayDtFZ8XFn7WFs5Ars8XasFv3sFy3W5
+	W340vF4UurW8JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbhAYjsxI4VWUJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1IIY67AE
+	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+	IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2
+	jsIE14v26r1j6r4UM28EF7xvwVC2z280aVCY1x0267AKxVWUJVW8JwAS0I0E0xvYzxvE52
+	x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWr
+	XwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4
+	xvF2IE5I8CrVAEw40kM4kE6x8GjcxK67AEwI8IwI0ExsIj0wCjxxvEa2IrMxkIecxEwVAF
+	wVW5XwCY0x0Ix7I2Y4AK64vIr41lcIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lcIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVWUJVW8JwCYIxAIcVC2z280aVAFwI0_Jr0_Gr1lcIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Jr0_Gr1l42xK82IYc2Ij64vIr41l4x8a64kEw24l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67AKxVWUGVWUWwC20s02
+	6x8GjcxK67AKxVWUJVWUGwC2zVAF1VAY17CE14v26r1j6r15MIIYrxkI7VAKI48JMIIF0x
+	vE42xK8VAvwI8IcIk0rVWUJVWUCbIYCTnIWIevJa73UjIFyTuYvjxUjVyIUUUUU
+
+------=_Part_37_14894886.1537194746518
+Content-Type: text/html;charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3DUTF-8">
+<?xml version=3D"1.0" encoding=3D"UTF-8"?>
+<META CONTENT=3D"text/html; charset=3DUTF-8" HTTP-EQUIV=3D"Content-Type"/>
+<TABLE WIDTH=3D"100%" style=3D"font-family=3Darial; font-size=3D9pt" align=
+=3D"center"/><tr>
+<td>20180917</td></tr><tr>
+<td>hold-delete-letter-00</td></tr><tr>
+<td colspan=3D"2" width=3D"100%">
+<hr/>
+</td></tr><tr>
+<td ALIGN=3D"CENTER" STYLE=3D"font-size: 12pt; font-family: Arial" colspan=
+=3D"2" width=3D"100%">
+<b>=E9=A2=84=E7=BA=A6=E8=AF=B7=E6=B1=82=E5=88=A0=E9=99=A4=E4=BF=A1<br/>
+</b>
+</td></tr></TABLE>
+<TABLE STYLE=3D"font-size: 9pt; font-family: Arial" WIDTH=3D"100%"><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr></TABLE>
+<TABLE WIDTH=3D"100%" style=3D"font-family=3Darial; font-size=3D9pt" align=
+=3D"center"/><tr>
+<td width=3D"70%">=E5=BC=A0=E9=BC=8E</td>
+<td/></tr><tr>
+<td width=3D"70%">=E8=AE=A1=E7=AE=97=E6=9C=BA=E5=AD=A6=E9=99=A2</td>
+<td/></tr><tr>
+<td width=3D"70%">=E8=BD=AF=E4=BB=B6=E5=B7=A5=E7=A8=8B</td>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%"/>
+<td/></tr><tr>
+<td width=3D"70%">1387690483</td>
+<td/></tr><tr>
+<td width=3D"70%">2017302580234@whu.edu.cn</td>
+<td/></tr></TABLE>
+<TABLE WIDTH=3D"100%" style=3D"font-family=3Darial; font-size=3D12pt" align=
+=3D"center"/><tr>
+<td width=3D"20%">
+<b>=E8=AF=BB=E8=80=85ID:</b>
+</td>
+<td>ID900164515</td></tr></TABLE></TABLE>
+<TABLE WIDTH=3D"100%" style=3D"font-family=3Darial; font-size=3D9pt" align=
+=3D"center"/><tr><td>
+<br/>
+<br/>=E4=BA=B2=E7=88=B1=E7=9A=84=E5=85=88=E7=94=9F/=E5=A5=B3=E5=A3=AB=EF=BC=
+=9A<br/>
+<br/><tr><td>=E9=A2=84=E7=BA=A6=E8=AF=B7=E6=B1=82=E7=9A=84=E4=BF=9D=E7=95=
+=99=E6=97=A5=E6=9C=9F=E4=B8=BA3=E5=A4=A9=EF=BC=8C=E7=94=B1=E4=BA=8E=E6=82=
+=A8=E6=9C=AA=E5=9C=A83=E5=A4=A9=E5=86=85=E5=8F=96=E4=B9=A6=EF=BC=8C=E6=88=
+=91=E4=BB=AC=E5=9C=A8   20180917   =E5=8F=96=E6=B6=88=E4=BA=86=E4=B8=8B=E5=
+=88=97=E9=A2=84=E7=BA=A6=E8=AF=B7=E6=B1=82=EF=BC=8C=E5=90=8C=E6=97=B6=E6=AF=
+=8F=E5=86=8C=E5=B0=86=E7=BB=99=E6=82=A8=E8=AE=B0=E5=BD=95=E8=BF=9D=E8=A7=84=
+1=E6=AC=A1=EF=BC=8C=E5=BD=93=E8=BF=9D=E8=A7=84=E8=AE=B0=E5=BD=95=E8=B6=85=
+=E8=BF=873=E6=AC=A1=EF=BC=88=E5=90=AB3=E6=AC=A1=EF=BC=89=EF=BC=8C=E6=88=91=
+=E4=BB=AC=E5=B0=86=E5=9C=A8180=E5=A4=A9=E5=86=85=E6=9A=82=E5=81=9C=E5=90=91=
+=E6=82=A8=E6=8F=90=E4=BE=9B=E9=A2=84=E7=BA=A6=E6=9C=8D=E5=8A=A1=E3=80=82=E7=
+=BB=99=E6=82=A8=E5=B8=A6=E6=9D=A5=E7=9A=84=E4=B8=8D=E4=BE=BF=EF=BC=8C=E6=95=
+=AC=E8=AF=B7=E8=B0=85=E8=A7=A3=E3=80=82<br/><tr><td><tr><td>
+<TABLE WIDTH=3D"100%" BORDER=3D"1" style=3D"font-family=3Darial; font-size=
+=3D9pt" align=3D""/>
+<br/>
+<TABLE WIDTH=3D"100%" BORDER=3D"1" style=3D"font-family=3Darial; font-size=
+=3D9pt" align=3D""/><tr>
+<th>=E9=A2=84=E7=BA=A6=E8=AF=B7=E6=B1=82=E8=AE=BE=E7=BD=AE=E6=97=A5=E6=9C=
+=9F</th>
+<th>=E9=A2=84=E7=BA=A6=E6=9E=B6=E6=88=AA=E6=AD=A2=E6=97=A5=E6=9C=9F</th>
+<th>=E4=B9=A6=E7=9B=AE=E4=BF=A1=E6=81=AF</th>
+<th>=E5=8D=95=E5=86=8C=E6=8F=8F=E8=BF=B0</th></tr><tr>
+<td>20180912<br/>
+</td>
+<td>20180917<br/>
+</td>
+<td>=E5=8C=97=E5=B1=B1=E7=8C=9B=E9=82=A6, 1979-<br/> =E2=80=9C=E6=96=AD=E5=
+=A4=B4=E5=8F=B0=E5=9F=8E=E2=80=9D=E6=9D=80=E4=BA=BA=E4=BA=8B=E4=BB=B6<br/> =
+=E9=95=BF=E6=98=A5 : =E5=90=89=E6=9E=97=E5=87=BA=E7=89=88=E9=9B=86=E5=9B=A2=
+=E6=9C=89=E9=99=90=E8=B4=A3=E4=BB=BB=E5=85=AC=E5=8F=B8, 2010<br/>
+<br/>
+</td>
+<td>
+<br/>
+</td></tr></TABLE>
+<TABLE WIDTH=3D"100%" style=3D"font-family=3Darial; font-size=3D9pt" align=
+=3D"center"/><tr><td>
+<br/><tr><td>
+<br/><tr><td>=E6=AD=A6=E6=B1=89=E5=A4=A7=E5=AD=A6=E5=9B=BE=E4=B9=A6=E9=A6=
+=86<br/><tr><td><tr><td><tr><td>
+
+------=_Part_37_14894886.1537194746518--
