@@ -1,6 +1,7 @@
 package com.mail.MailClient.entity;
 
 public class BriefMail {
+    private final int index;
     private String datetime;
     private String senderName;
     private String senderEmail;
@@ -9,8 +10,18 @@ public class BriefMail {
     private String receiverName;
     private String receiverEmail;
     private String subject;
+    private String contentType;
+    private String charset;
+    private String boundary;
+    private String contentTransferEncoding;
 
-    public BriefMail() { }
+    public BriefMail(int index) {
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return index;
+    }
 
     public String getDatetime() {
         return datetime;
@@ -44,6 +55,22 @@ public class BriefMail {
         return subject;
     }
 
+    public String getBoundary() {
+        return boundary;
+    }
+
+    public String getContentTransferEncoding() {
+        return contentTransferEncoding;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
     public void setDatetime(String datetime) {
         this.datetime = datetime;
     }
@@ -74,5 +101,21 @@ public class BriefMail {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public void setBoundary(String boundary) {
+        this.boundary = boundary;
+    }
+
+    public void setContentTransferEncoding(String contentTransferEncoding) {
+        this.contentTransferEncoding = contentTransferEncoding;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
     }
 }

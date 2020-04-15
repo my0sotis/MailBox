@@ -14,8 +14,6 @@ import java.util.Map;
 import java.io.File;
 
 public class Mail {
-    // 结束符
-    private static final String LINE_END = "\r\n";
     private String username;
     private String password;
     private String[] to;
@@ -25,11 +23,6 @@ public class Mail {
      * 所有接收者
      */
     private List<String> receivers;
-    /**
-     * smtp服务器
-     */
-    private Map.Entry<String, Integer> smtp;
-    private Map.Entry<String, Integer> pop;
     private String[] attachments;
     // 附件内容类型
     private String defaultAttachmentContentType;
