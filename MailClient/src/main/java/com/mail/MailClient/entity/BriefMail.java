@@ -2,6 +2,7 @@ package com.mail.MailClient.entity;
 
 public class BriefMail {
     private final int index;
+    private String messageID;
     private String datetime;
     private String senderName;
     private String senderEmail;
@@ -21,6 +22,10 @@ public class BriefMail {
 
     public int getIndex() {
         return index;
+    }
+
+    public String getMessageID() {
+        return messageID;
     }
 
     public String getDatetime() {
@@ -69,6 +74,10 @@ public class BriefMail {
 
     public String getCharset() {
         return charset;
+    }
+
+    public void setMessageID(String messageID) {
+        this.messageID = messageID;
     }
 
     public void setDatetime(String datetime) {

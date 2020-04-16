@@ -24,6 +24,7 @@ public class Receiver {
     private final BufferedReader in = null;
     private final BufferedWriter out = null;
 
+    private final static Pattern messageIDPattern = Pattern.compile("^Message-ID:\\s?<([a-zA-Z0-9@\\-_.]*)>$");
     private final static Pattern datePattern = Pattern.compile("^Date:\\s?(.+)$");
     private final static Pattern fromPattern = Pattern.compile("^From:\\s?\"?([a-zA-Z0-9\\s=?/\\-.@]*)\"? (<(.+)>)?$");
     private final static Pattern replyToPattern =
@@ -35,9 +36,12 @@ public class Receiver {
             Pattern.compile("^Content-Type:\\s?([a-zA-Z/]*);\\s?(charset=\"?([a-zA-Z0-9\\-]*)\"?)?$");
     private final static Pattern boundaryPattern = Pattern.compile("^boundary=\"([a-zA-z_.0-9\\-=]*)\"$");
     private final static Pattern contentTransferEncodingPattern =
-            Pattern.compile("^Content-Transfer-Encoding:([a-zA-Z0-9\\-]*)$");
+            Pattern.compile("^Content-Transfer-Encoding:\\s?([a-zA-Z0-9\\-]*)$");
     private final static Pattern textPattern = Pattern.compile("^text/([a-zA-z]*)$");
     private final static Pattern multipartPattern = Pattern.compile("^multipart/([a-zA-z]*)$");
+    private final static Pattern charsetPattern = Pattern.compile("^charset=\"?([a-zA-Z0-9\\-]*)\"?;?$");
+    private final static Pattern namePattern = Pattern.compile("^name=\"([a-zA-Z0-9.]*)\"$");
+    private final static Pattern contentIDPattern = Pattern.compile("^Content-ID:\\s?<([a-zA-Z0-9@.]*)>$");
 
     public Receiver(String username, String password) {
         this.username = username;
@@ -366,7 +370,7 @@ public class Receiver {
     }
 
     /**
-     * 获取新建基本信息
+     * 获取信件基本信息
      * @param index 信件的序号
      * @param mailInfo 邮件头部信息
      * @return 邮件基本信息
@@ -379,10 +383,12 @@ public class Receiver {
             list.add(string.trim());
         }
         int i = 0;
+        // 是否获取到Message ID
+        boolean haveMessageID = false;
         // 是否获取到日期、发件人、回复地址、收件人、主题
         boolean haveDate = false, haveFrom = false, haveReplyTo = false, haveTo = false, haveSubject = false;
         // 是否获取到编码类型、分隔符、内容传送编码
-        boolean haveContentType = false, haveBoundary = false, haveContentTransferEncoding = false;
+        boolean haveContentType = false, haveBoundary = false, haveContentTransferEncoding = false, haveCharset = false;
         // 日期
         Matcher matcher, codeMatcher;
         for (; i < list.size(); i++) {
@@ -391,6 +397,12 @@ public class Receiver {
             if (!haveDate && matcher.matches()) {
                 mail.setDatetime(matcher.group(1));
                 haveDate = true;
+                continue;
+            }
+            matcher = haveMessageID ? null : messageIDPattern.matcher(list.get(i));
+            if (!haveMessageID && matcher.matches()) {
+                mail.setMessageID(matcher.group(1));
+                haveMessageID = true;
                 continue;
             }
             // 获取发件人信息
@@ -463,8 +475,12 @@ public class Receiver {
             // 获取内容类型
             matcher = haveContentType ? null : contentTypePattern.matcher(list.get(i));
             if (!haveContentType && matcher.matches()) {
+                // 获取ContentType信息
                 mail.setContentType(matcher.group(1));
-                mail.setCharset(matcher.group(3));
+                if (!haveCharset) {
+                    mail.setCharset(matcher.group(3));
+                    haveCharset = !(matcher.group(3) == null);
+                }
                 haveContentType = true;
                 continue;
             }
@@ -478,6 +494,12 @@ public class Receiver {
             if (!haveContentTransferEncoding && matcher.matches()) {
                 mail.setContentTransferEncoding(matcher.group(1));
                 haveContentTransferEncoding = true;
+                continue;
+            }
+            matcher = haveCharset ? null : charsetPattern.matcher(list.get(i));
+            if (!haveCharset && matcher.matches()) {
+                mail.setCharset(matcher.group(1));
+                haveCharset = true;
             }
         }
         return mail;
@@ -499,6 +521,7 @@ public class Receiver {
             System.out.println(result.getCode());
             return result;
         }
+        // 所有邮件基本信息
         List<BriefMail> list = new ArrayList<>();
         try {
             // Initialize input and output streams
@@ -530,7 +553,8 @@ public class Receiver {
      * it's convinced that popServer have been confirmed
      */
     public Result receiveMailAt(int index) {
-        new Result(250);
+        // Test Mode
+        setServerInfo(username);
         Result result = POP3Client();
         if (result.getCode() != 250) {
             System.out.println(result.getCode());
@@ -566,48 +590,180 @@ public class Receiver {
             mail.setBriefInfo(getBriefMailInfo(index, mailHead.toString()));
             // TODO 分析内容信息
             i += 1;
-            Matcher matcher = textPattern.matcher(mail.getBriefInfo().getContentType());
-            StringBuilder mailContents = new StringBuilder();
-            if (matcher.matches()) {
-                // text的类型
-                String type = matcher.group(1);
-                // 默认为UTF-8
-                String charset = mail.getBriefInfo().getCharset() == null ? "UTF-8" : mail.getBriefInfo().getCharset();
-                String encoding = mail.getBriefInfo().getContentTransferEncoding();
-                String mailContent;
-                while (i < mailInfos.length) {
-                    // 去除行尾多余的符号
-                    mailContent = mailInfos[i].trim();
-                    if (mailContent.endsWith("=")) {
-                        mailContent = mailContent.substring(0, mailContent.length() - 1);
-                    }
-                    mailContents.append(mailContent);
-                    i++;
-                }
-                if ("quoted-printable".equalsIgnoreCase(encoding)) {
-                    mailContent = CodeHelper.QPConvertCharset(mailContents.toString().getBytes(), charset);
-                } else if ("base64".equalsIgnoreCase(encoding)) {
-                    mailContent = CodeHelper.Base64ConvertCharset(mailContents.toString(), charset);
-                } else {
-                    mailContent = mailContents.toString();
-                }
-                // 得到结果
-                System.out.println(mailContent);
-            } else {
-                matcher = multipartPattern.matcher(mail.getBriefInfo().getContentType());
-                String outsideType = matcher.group(1);
-                System.out.println(outsideType);
+            if ("This is a multi-part message in MIME format.".equals(mailInfos[i])) {
+                i += 2;
             }
-
+            if (("--" + mail.getBriefInfo().getBoundary()).equals(mailInfos[i].trim())) {
+                i++;
+            }
+            List<String> mailInfoList = new ArrayList<>();
+            for (; i < mailInfos.length; i++) {
+                mailInfoList.add(mailInfos[i]);
+            }
+            // 分析邮件内容
+            analyzeMailInfo(mail, mailInfoList, mail.getBriefInfo().getBoundary(), null, null, null);
         } catch (IOException e) {
             printErrorString(e.getMessage());
         }
         return result;
     }
 
+    public static void analyzeMailInfo(DetailedMail mail, List<String> mailInfos, String boundary,
+                                       String contentType, String charset, String encoding) {
+        // 获取内容类型
+        Matcher textMatcher, multipartMatcher;
+        if (contentType == null) {
+            textMatcher = textPattern.matcher(mail.getBriefInfo().getContentType());
+            multipartMatcher = multipartPattern.matcher(mail.getBriefInfo().getContentType());
+        } else {
+            textMatcher = textPattern.matcher(contentType);
+            multipartMatcher = multipartPattern.matcher(contentType);
+        }
+        StringBuilder mailContents = new StringBuilder();
+        int i = 0;
+        if (textMatcher.matches()) {
+            // 默认为UTF-8
+            if (charset == null && encoding == null) {
+                charset = mail.getBriefInfo().getCharset() == null ? "UTF-8" : mail.getBriefInfo().getCharset();
+                encoding = mail.getBriefInfo().getContentTransferEncoding();
+            }
+            charset = charset == null ? "UTF-8" : charset;
+            String mailContent;
+            while (i < mailInfos.size()) {
+                // 去除行尾多余的符号
+                mailContent = mailInfos.get(i).trim();
+                if (mailContent.endsWith("=")) {
+                    mailContent = mailContent.substring(0, mailContent.length() - 1);
+                }
+                mailContents.append(mailContent);
+                i++;
+            }
+            // 根据传输类型 选择Base64编码或者quoted-printable编码
+            if ("quoted-printable".equalsIgnoreCase(encoding)) {
+                mailContent = CodeHelper.QPConvertCharset(mailContents.toString().getBytes(), charset);
+            } else if ("base64".equalsIgnoreCase(encoding)) {
+                mailContent = CodeHelper.Base64ConvertCharset(mailContents.toString(), charset);
+            } else {
+                mailContent = mailContents.toString();
+            }
+            // 得到结果
+            mail.addContent(mailContent);
+            // 打印结果
+            System.out.println(mailContent);
+        } else if (multipartMatcher.matches()) {
+            String type = multipartMatcher.group(1);
+            // 如果为
+            if ("alternative".equals(type)) {
+                // 获取内容类型
+                Matcher matcher;
+                String subContentType = "", subCharset = "", subEncoding = "", subBoundary = "";
+                boolean haveContentType = false, haveCharset = false, haveEncoding = false, haveBoundary = false;
+                int j = 0;
+                // 跳过分界线
+                if (("--" + boundary).equals(mailInfos.get(j))) {
+                    j++;
+                }
+                // 遍历类型
+                for (; j < mailInfos.size() && !mailInfos.get(j).trim().equals(""); j++) {
+                    matcher = haveContentType ? null : contentTypePattern.matcher(mailInfos.get(j));
+                    if (!haveContentType && matcher.matches()) {
+                        subContentType = matcher.group(1);
+                        if (!haveCharset) {
+                            subCharset = matcher.group(3);
+                            haveCharset = !(matcher.group(3) == null);
+                        }
+                        haveContentType = true;
+                        continue;
+                    }
+                    matcher = haveCharset ? null : charsetPattern.matcher(mailInfos.get(j));
+                    if (!haveCharset && matcher.matches()) {
+                        subCharset = matcher.group(1);
+                        haveCharset = true;
+                        continue;
+                    }
+                    matcher = haveEncoding ? null : contentTransferEncodingPattern.matcher(mailInfos.get(j));
+                    if (!haveEncoding && matcher.matches()) {
+                        subEncoding = matcher.group(1);
+                        haveEncoding = true;
+                        continue;
+                    }
+                    matcher = haveBoundary ? null : boundaryPattern.matcher(mailInfos.get(j));
+                    if (!haveBoundary && matcher.matches()) {
+                        subBoundary = matcher.group(1);
+                        haveBoundary = true;
+                    }
+                }
+                List<String> subContent = new ArrayList<>();
+                for (j += 1; j < mailInfos.size(); j++) {
+                    if (("--" + boundary).equals(mailInfos.get(j))) {
+                        break;
+                    }
+                    subContent.add(mailInfos.get(j));
+                }
+                analyzeMailInfo(mail, subContent, subBoundary, subContentType, subCharset, subEncoding);
+                // 跳过分界线
+                j++;
+                // 获取内容类型
+                // 重置标志位
+                haveContentType = false;
+                subContentType = "";
+                haveCharset = false;
+                subCharset = "";
+                haveEncoding = false;
+                subEncoding = "";
+                haveBoundary = false;
+                subBoundary = "";
+                for (; j < mailInfos.size() && !mailInfos.get(j).trim().equals(""); j++) {
+                    matcher = haveContentType ? null : contentTypePattern.matcher(mailInfos.get(j));
+                    if (!haveContentType && matcher.matches()) {
+                        subContentType = matcher.group(1);
+                        if (!haveCharset) {
+                            subCharset = matcher.group(3);
+                            haveCharset = !(matcher.group(3) == null);
+                        }
+                        haveContentType = true;
+                        continue;
+                    }
+                    matcher = haveCharset ? null : charsetPattern.matcher(mailInfos.get(j));
+                    if (!haveCharset && matcher.matches()) {
+                        subCharset = matcher.group(1);
+                        haveCharset = true;
+                        continue;
+                    }
+                    matcher = haveEncoding ? null : contentTransferEncodingPattern.matcher(mailInfos.get(j));
+                    if (!haveEncoding && matcher.matches()) {
+                        subEncoding = matcher.group(1);
+                        haveEncoding = true;
+                        continue;
+                    }
+                    matcher = haveBoundary ? null : boundaryPattern.matcher(mailInfos.get(j));
+                    if (!haveBoundary && matcher.matches()) {
+                        subBoundary = matcher.group(1);
+                        haveBoundary = true;
+                    }
+                }
+                subContent.clear();
+                for (j += 1; j < mailInfos.size(); j++) {
+                    if (("--" + boundary + "--").equals(mailInfos.get(j))) {
+                        break;
+                    }
+                    subContent.add(mailInfos.get(j));
+                }
+                analyzeMailInfo(mail, subContent, subBoundary, subContentType, subCharset, subEncoding);
+            } else if ("related".equals(type)) {
+                // 获取内容类型
+                Matcher matcher;
+                StringBuilder mailContent = new StringBuilder();
+                String subContentType = "", subCharset = "", subEncoding = "", subBoundary = "", subName = "";
+                String subContentID = "";
+
+            }
+        }
+    }
+
     public static void main(String[] args) {
         Receiver receiver = new Receiver("2017302580244@whu.edu.cn", "zpc888wsadjkl,./");
-        receiver.receiveMails();
-        receiver.receiveMailAt(2);
+//        receiver.receiveMails();
+        receiver.receiveMailAt(7);
     }
 }
