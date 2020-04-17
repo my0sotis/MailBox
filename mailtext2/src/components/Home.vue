@@ -49,6 +49,8 @@
 </template>
 
 <script>
+
+
 export default {
   name: "Home",
   data() {
@@ -80,6 +82,7 @@ export default {
     saveNavState(activePath){
       window.sessionStorage.setItem('activePath',activePath)
       this.activePath=activePath
+     // this.openLoading();
     }
 
   }

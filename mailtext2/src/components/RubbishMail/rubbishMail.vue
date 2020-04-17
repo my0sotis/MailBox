@@ -103,7 +103,14 @@ export default {
   },
   //初始化界面时加载邮件数据
   mounted(){
-     this.getJsonData();
+    console.log("loading.start");
+    const rLoading = this.openLoading();
+    //加载数据
+    this.getJsonData();
+    
+    rLoading.close();
+    console.log("loading.close");
+     
   },
   //可能还需要单独写一个后台修改数据后，前端同步修改的方法
   methods: {

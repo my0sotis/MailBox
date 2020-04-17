@@ -41,7 +41,7 @@
                 type="text"
                 prefix-icon="el-icon-message"
                 auto-complete="off"
-                placeholder="邮件地址(多个收件人用 ; 进行分割)"
+                placeholder="邮件地址(多个收件人用';进行分割)"
                 v-model="sendMail_form.to"
               ></el-input>
             </el-form-item>
@@ -146,8 +146,15 @@ export default {
     };
   },
   created() {
-    this.sendChooseNo();
-
+    console.log("loading.start");
+    const rLoading = this.openLoading();
+    if(this.$route.query["id"] == null){
+      console.log("没有执行");
+    }else{
+      this.sendChooseNo();
+    }
+    rLoading.close();
+    console.log("loading.close");
     //这部分是从查看邮件进行回复时跳转到的发送界面，回复邮件时自动把收件人和主题给补上，仅用于测试
     //正式版本在此使用axios从后台接收的邮件信息，传递的数据是replyNo，即邮件序号，返回的信息同测试版本一样
     // if (this.$route.query != null) {
@@ -158,6 +165,7 @@ export default {
     //此外还有转发界面也会带着邮件序号进行跳转，这部分需要单独处理一下，具体可以参考lookMail.vue中如何获取上一个界面的URL进行判断
     //所以不能仅仅通过query来判断是否补充相关内容，需要判断上一个界面上是否具有相关的转发或者回复功能来补充
     //上面代码考虑不周，需要改进
+   
   },
   methods: {
     // handlefunc(){
