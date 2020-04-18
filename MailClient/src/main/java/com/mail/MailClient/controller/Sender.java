@@ -1,8 +1,7 @@
 package com.mail.MailClient.controller;
 
-import com.mail.MailClient.entity.Mail;
-import com.mail.MailClient.entity.SMTPServer;
-import com.mail.MailClient.entity.Result;
+import com.mail.MailClient.entity.*;
+import com.mail.MailClient.statics.BasicInfo;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.Socket;
@@ -370,5 +369,10 @@ public class Sender {
             }
         }
         return new Result(250);
+    }
+
+    public Mail getCurrentMail()
+    {
+        return currentMail;
     }
 }

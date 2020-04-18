@@ -2,6 +2,7 @@ package com.mail.MailClient.controller;
 
 import com.mail.MailClient.entity.Result;
 import com.mail.MailClient.entity.User;
+import com.mail.MailClient.statics.BasicInfo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,8 @@ public class LoginController
         if(user == null || user.getUsername() == null || user.getPassword() == null) {
             return new Result(0);
         }
+        BasicInfo.username = user.getUsername();
+        BasicInfo.passworld = user.getPassword();
         return user.checkInfo();
     }
 }

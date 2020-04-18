@@ -1,7 +1,8 @@
 package com.mail.MailClient.entity;
 
 public class BriefMail {
-    private final int index;
+    private int index;
+    private int num;
     private String messageID;
     private String datetime;
     private String senderName;
@@ -19,6 +20,8 @@ public class BriefMail {
     public BriefMail(int index) {
         this.index = index;
     }
+
+    public BriefMail(){}
 
     public int getIndex() {
         return index;
@@ -126,5 +129,15 @@ public class BriefMail {
 
     public void setCharset(String charset) {
         this.charset = charset;
+    }
+
+    public int getNum()
+    {
+        return num;
+    }
+
+    public void setNum(int num)
+    {
+        this.num = num;
     }
 }

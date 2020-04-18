@@ -20,6 +20,10 @@ public class Receiver {
     boolean isDebug = false;
     private final BufferedReader in = null;
     private final BufferedWriter out = null;
+    // 所有邮件基本信息
+    List<BriefMail> list = new ArrayList<>();
+    //某一详细邮件
+    DetailedMail mail = new DetailedMail();
 
     private final static Pattern messageIDPattern = Pattern.compile("^Message-ID:\\s?<([a-zA-Z0-9@\\-_.]*)>$");
     private final static Pattern datePattern = Pattern.compile("^Date:\\s?(.+)$");
@@ -60,18 +64,18 @@ public class Receiver {
         for (Map.Entry<String, Integer> entry : POPServer.popServer.entrySet()) {
             if (entry.getKey().contains(suffix)) {
                 pop = entry;
-                result.setCode(250);
+                result.setCode(200);
                 break;
             }
         }
-        if (result.getCode() != 250) {
+        if (result.getCode() != 200) {
             result.setCode(4);
         }
         return result;
     }
 
     private Result POP3Client() {
-        Result result = new Result(250);
+        Result result = new Result(200);
         try {
             // 新建Socket连接
             popSocket = new Socket(pop.getKey(), pop.getValue());
@@ -302,6 +306,41 @@ public class Receiver {
     }
 
     /**
+     * 根据下标删除对应邮件
+     * @param index 邮件索引
+     * @return 返回执行结果类
+     */
+    public Result deleteMailAt(int index) {
+        // Test Mode
+        setServerInfo(username);
+        Result result = POP3Client();
+        if (result.getCode() != 200) {
+            System.out.println(result.getCode());
+            return result;
+        }
+        try {
+            // Initialize input and output streams
+            BufferedReader in = new BufferedReader(new InputStreamReader(popSocket.getInputStream()));
+            BufferedWriter out = new BufferedWriter(new OutputStreamWriter(popSocket.getOutputStream()));
+            // Login
+            user(username, in, out);
+            pass(password,in,out);
+            int mailNum = stat(in, out);
+            if (index > mailNum || index <= 0) {
+                result.setCode(10);
+                return result;
+            }
+            dele(index, in, out);
+            quit(in, out);
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            printErrorString(e.getMessage());
+        }
+        return result;
+    }
+
+    /**
      * 退出邮箱
      * @param in 输入流
      * @param out 输出流
@@ -509,17 +548,16 @@ public class Receiver {
     public Result receiveMails() {
         Result result = new Result(0);
         // 设置POP3服务器
-        if (setServerInfo(username).getCode() != 250) {
+        if (setServerInfo(username).getCode() != 200) {
             System.out.println(result.getCode());
             return result;
         }
         result = POP3Client();
-        if (result.getCode() != 250) {
+        if (result.getCode() != 200) {
             System.out.println(result.getCode());
             return result;
         }
-        // 所有邮件基本信息
-        List<BriefMail> list = new ArrayList<>();
+
         try {
             // Initialize input and output streams
             BufferedReader in = new BufferedReader(new InputStreamReader(popSocket.getInputStream()));
@@ -531,6 +569,7 @@ public class Receiver {
             BriefMail mail;
             for (int i = mailNum; i >= 1; i--) {
                 mail = getBriefMailInfo(i, top(i, 0, in, out));
+                mail.setNum(mailNum-i+1);
                 list.add(mail);
             }
             quit(in, out);
@@ -539,7 +578,7 @@ public class Receiver {
         } catch (IOException e) {
             printErrorString(e.getMessage());
         }
-        result.setCode(250);
+        result.setCode(200);
         return result;
     }
 
@@ -553,7 +592,7 @@ public class Receiver {
         // Test Mode
         setServerInfo(username);
         Result result = POP3Client();
-        if (result.getCode() != 250) {
+        if (result.getCode() != 200) {
             System.out.println(result.getCode());
             return result;
         }
@@ -567,12 +606,13 @@ public class Receiver {
             int mailNum = stat(in, out);
             if (index > mailNum || index <= 0) {
                 result.setCode(10);
+                return result;
             }
             String mailInfo = retr(index, in, out);
             quit(in, out);
             in.close();
             out.close();
-            DetailedMail mail = new DetailedMail();
+
             String[] mailInfos = mailInfo.split("\n");
             // 获取邮件头部信息
             StringBuilder mailHead = new StringBuilder();
@@ -835,7 +875,7 @@ public class Receiver {
                 result = fileContent.toString().getBytes();
             }
             StringBuilder fileLocation = new StringBuilder();
-            fileLocation.append("./Assets/").append(mail.getBriefInfo().getMessageID()).append("/").append(lastType);
+            fileLocation.append("./").append(mail.getBriefInfo().getMessageID()).append("/").append(lastType);
             File dir = new File(fileLocation.toString());
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -851,4 +891,5 @@ public class Receiver {
             lastType = "";
         }
     }
+
 }

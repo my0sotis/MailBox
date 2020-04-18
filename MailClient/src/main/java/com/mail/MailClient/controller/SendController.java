@@ -2,6 +2,7 @@ package com.mail.MailClient.controller;
 
 import com.mail.MailClient.entity.Mail;
 import com.mail.MailClient.entity.Result;
+import com.mail.MailClient.statics.BasicInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
