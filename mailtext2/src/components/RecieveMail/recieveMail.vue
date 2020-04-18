@@ -38,7 +38,7 @@
           width="250">
         </el-table-column>
         <el-table-column
-          prop="theme"
+          prop="subject"
           label="主题"
           width="600"
           show-overflow-tooltip>

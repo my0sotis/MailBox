@@ -1,0 +1,149 @@
+Received: from ucmailc016.sendcloud.org (unknown [106.75.8.88])
+	by email1 (Coremail) with SMTP id AQBjCgD3_zNWEd9dnXU_AQ--.11147S2;
+	Thu, 28 Nov 2019 08:14:15 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=gitmail.oschina.net; i=@gitmail.oschina.net; q=dns/txt; s=mail;
+ t=1574900062; h=date : from : reply-to : to : message-id : subject :
+ mime-version : content-type : content-transfer-encoding :
+ list-unsubscribe : from;
+ bh=z1STSf7gTpOgKhtuzvyol2uM1+CLAflMMxOvd6/YdqM=;
+ b=HYQHT3q+qmPsx1Baf8GzwazxT4ggE9XYDCn0aLf6E2py1pQgcUvPX/WajY4SFhgDLoCkp
+ 8cVOEF1Q/pCB/yZWi7tp25ZaWvKUUEXvixSG5ElkTGvEtFHusDNYQKsG9rY/+OfSCPNyZzK
+ +u1ZJLzACG/2lOPReBlVOdw5Qnkuvmw=
+Received:from git.oschina.net (Unknown [127.0.0.1]) by SendCloud Inbound Server with ESMTPSA id 2179BFE9-448A-44B6-A647-785C8C501CAD.1 envelope-from <no-reply@git.oschina.net> (authenticated bits=0) (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 verify=FAIL); Thu, 28 Nov 2019 08:14:22 +0800
+Date:Thu, 28 Nov 2019 08:14:22 +0800
+From:=?UTF-8?B?56CB5LqR?= <no-reply@gitmail.oschina.net>
+Reply-To:=?UTF-8?B?56CB5LqR?= <no-reply@git.oschina.net>
+To:2017302580244@whu.edu.cn
+Message-ID:<1574900062506_42129_9156_4917.sc-10_9_4_40-inbound0$2017302580244@whu.edu.cn>
+Subject:=?utf-8?b?5rOo5YaM56CB5LqR6YKu566x6aqM6K+B?=
+Mime-Version:1.0
+Content-Type:text/html; charset="UTF-8"
+Content-Transfer-Encoding:quoted-printable
+X-SENDCLOUD-UUID:1574900062506_42129_9156_4917.sc-10_9_4_40-inbound0$2017302580244@whu.edu.cn
+X-SENDCLOUD-LOG:1574900062506_42129_9156_4917.sc-10_9_4_40-inbound0$2017302580244@whu.edu.cn#2017302580244@whu.edu.cn#122268#42129#0
+X-SMTPAPI:
+List-Unsubscribe:<http://sctrack.sc.gg/track/unsubscribe.do?p=eyJ1c2VyX2lkIjogNDIxMjksICJ0YXNrX2lkIjogIiIsICJlbWFpbF9pZCI6ICIxNTc0OTAwMDYyNTA2XzQyMTI5XzkxNTZfNDkxNy5zYy0xMF85XzRfNDAtaW5ib3VuZDAkMjAxNzMwMjU4MDI0NEB3aHUuZWR1LmNuIiwgInNpZ24iOiAiZWY2NWExZDljNTEyNzM5ZGU3NjllYTY2N2FlYzY0YzQiLCAibGFiZWwiOiAwLCAicmVjZWl2ZXIiOiAiMjAxNzMwMjU4MDI0NEB3aHUuZWR1LmNuIiwgImNhdGVnb3J5X2lkIjogMTIyMjY4fQ%3D%3D>,<mailto:0_122268_1574900062506_42129_9156_4917.sc-10_9_4_40-inbound0@gitmail.oschina.net>
+X-CM-TRANSID:AQBjCgD3_zNWEd9dnXU_AQ--.11147S2
+Authentication-Results: email1; spf=pass smtp.mail=no-reply@gitmail.os
+	china.net;
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUOE7k0a2IF6F4UM7kC6x804xWl14x267AK
+	xVWUJVW8JwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+	6r4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r1j6r
+	4UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAvF7xS0VCYjI8vzVWUZwAqx4xG6xAI
+	xVCFxsxG0wAqx4xG6I80eVA0xI0YY7vIx2IE14AGzxvEb7x7Mc02F40Ex2IqxVA0nI8IcV
+	AYz20kMc02F40Ex2IqxVA0nI8IcVAqx4xJMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E
+	87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFcxC0VAqx4
+	xG64AKrs4lw4CE7480Y4vE14AKx2xKxVC2ax8xMx02cVCv0xWlc2xSY4AK67AK6w1lc2Ij
+	II80xcxEwVAKI48JMxvI42IY6xIIjxv20xvE14v26r1I6r4UMxvI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Jr0_Gr1lcIIF0xvEx4A2jsIE14v26r1j6r4UMxvI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UMxAIw28IcxkI7VAKI48JMxCjnVCjjxCrMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_JrI_JrWlx2IqxVCjr7xvwVAFwI0_Jr0_Jr4lx4CE17CEb7AF
+	67AKxVWUJVWUXwCIc40Y0x0EwIxGrwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UYxBIda
+	VFxhVjvjDU0xZFpf9x07jihL8UUUUU=
+
+<html lang=3D'zh-CN'>
+<head>
+<meta content=3D'text/html; charset=3Dutf-8' http-equiv=3D'Content-Type'>
+<title>
+=E7=A0=81=E4=BA=91
+</title>
+</meta>
+<style>
+  .email-body{color:#40485B;font-size:14px;font-family:-apple-system, "Helv=
+etica Neue", Helvetica, "Nimbus Sans L", "Segoe UI", Arial, "Liberation San=
+s", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Wenquanyi Micro =
+Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", s=
+ans-serif;background:#f8f8f8}.pull-right{float:right}a{color:#FE7300;text-d=
+ecoration:underline}a:hover{color:#fe9d4c}a:active{color:#b15000}.logo{text=
+-align:center;margin-bottom:20px}.panel{background:#fff;border:1px solid #E=
+3E9ED;margin-bottom:10px}.panel-header{font-size:18px;line-height:30px;padd=
+ing:10px 20px;background:#fcfcfc;border-bottom:1px solid #E3E9ED}.panel-bod=
+y{padding:20px;line-height:1.7}.container{width:100%;max-width:600px;paddin=
+g:20px;margin:0 auto}.text-center{text-align:center}.thumbnail{padding:4px;=
+max-width:100%;border:1px solid #E3E9ED}.btn-primary{color:#fff;font-size:1=
+6px;padding:8px 14px;line-height:20px;border-radius:2px;display:inline-bloc=
+k;background:#FE7300;text-decoration:none}.btn-primary:hover,.btn-primary:a=
+ctive{color:#fff}.footer{color:#9B9B9B;font-size:12px;margin-top:20px}.foot=
+er a{color:#9B9B9B}.footer a:hover{color:#fe9d4c}.footer a:active{color:#b1=
+5000}.email-body#mail_to_teacher{line-height:26px;color:#40485B;font-size:1=
+6px;padding:0px}.email-body#mail_to_teacher .container,.email-body#mail_to_=
+teacher .panel-body{padding:0px}.email-body#mail_to_teacher .container{padd=
+ing-top:20px}.email-body#mail_to_teacher .textarea{padding:32px}.email-body=
+#mail_to_teacher .say-hi{font-weight:500}.email-body#mail_to_teacher .parag=
+raph{margin-top:24px}.email-body#mail_to_teacher .paragraph .pro-name{color=
+:#000000}.email-body#mail_to_teacher .paragraph.link{margin-top:32px;text-a=
+lign:center}.email-body#mail_to_teacher .paragraph.link .button{background:=
+#4A90E2;border-radius:2px;color:#FFFFFF;text-decoration:none;padding:11px 1=
+7px;line-height:14px;display:inline-block}.email-body#mail_to_teacher ul.pr=
+o-desc{list-style-type:none;margin:0px;padding:0px;padding-left:16px}.email=
+-body#mail_to_teacher ul.pro-desc li{position:relative}.email-body#mail_to_=
+teacher ul.pro-desc li::before{content:'';width:3px;height:3px;border-radiu=
+s:50%;background:red;position:absolute;left:-15px;top:11px;background:#4048=
+5B}.email-body#mail_to_teacher .blackboard-area{height:600px;padding:40px;b=
+ackground-image:url(https://gitee.com/wewin11235/upload-gitee-image/raw/mas=
+ter/bg.jpg);color:#FFFFFF}.email-body#mail_to_teacher .blackboard-area .big=
+-title{font-size:32px;line-height:45px;text-align:center}.email-body#mail_t=
+o_teacher .blackboard-area .desc{margin-top:8px}.email-body#mail_to_teacher=
+ .blackboard-area .desc p{margin:0px;text-align:center;line-height:28px}.em=
+ail-body#mail_to_teacher .blackboard-area .card:nth-child(odd){float:left;m=
+argin-top:45px}.email-body#mail_to_teacher .blackboard-area .card:nth-child=
+(even){float:right;margin-top:45px}.email-body#mail_to_teacher .blackboard-=
+area .card .title{font-size:18px;text-align:center;margin-bottom:10px}
+</style>
+
+</head>
+<body>
+<div class=3D'email-body'>
+<div class=3D'container'>
+<div class=3D'logo'>
+<img alt=3D"Logo-black" height=3D"30" src=3D"https://gitee.com/logo-black.s=
+vg" />
+</div>
+<div class=3D'panel'>
+<div class=3D'panel-header'>
+=E6=B3=A8=E5=86=8C=E9=AA=8C=E8=AF=81
+
+</div>
+<div class=3D'panel-body'>
+<p>=E6=82=A8=E5=A5=BD 2017302580244@whu.edu.cn=EF=BC=81</p>
+<p>=E6=AC=A2=E8=BF=8E=E6=B3=A8=E5=86=8C=E7=A0=81=E4=BA=91=EF=BC=8C=E8=AF=B7=
+=E5=B0=86=E9=AA=8C=E8=AF=81=E7=A0=81=E5=A1=AB=E5=86=99=E5=88=B0=E6=B3=A8=E5=
+=86=8C=E9=A1=B5=E9=9D=A2=E3=80=82</p>
+<p>=E9=AA=8C=E8=AF=81=E7=A0=81=EF=BC=9A980114</p>
+<p>=E8=AF=86=E5=88=AB=E7=A0=81=EF=BC=9ADES</p>
+
+</div>
+</div>
+<div class=3D'footer'>
+@Gitee.com
+<div class=3D'pull-right'>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
+<br/><br/><div style=3D"width:1px;height:0px;overflow:hidden"><img style=3D=
+"width:0;height:0" alt=3D"" src=3D"http://sctrack.sc.gg/track/open/eyJtYWls=
+bGlzdF9pZCI6IDAsICJ0YXNrX2lkIjogIiIsICJlbWFpbF9pZCI6ICIxNTc0OTAwMDYyNTA2XzQ=
+yMTI5XzkxNTZfNDkxNy5zYy0xMF85XzRfNDAtaW5ib3VuZDAkMjAxNzMwMjU4MDI0NEB3aHUuZW=
+R1LmNuIiwgInNpZ24iOiAiOGYzNDg0ZmVhNjNiY2E3YzAyZWFhMzdlNTBjNjgxZmUiLCAidXNlc=
+l9oZWFkZXJzIjoge30sICJsYWJlbCI6IDAsICJ1c2VyX2lkIjogNDIxMjksICJjYXRlZ29yeV9p=
+ZCI6IDEyMjI2OH0=3D.gif"/></div>
+<div style=3D"text-align:center"><div style=3D"border-top:1px solid #ddd;wi=
+dth: 100%;max-width: 560px;display:inline-block;padding:10px"><a style=3D"d=
+isplay:inline-block;background:#ddd; border-radius:4px;padding: 3px 15px;co=
+lor:#a6a6a6;text-decoration:none;font-size:12px" href=3D"http://sctrack.sc.=
+gg/track/unsubscribe.do?p=3DeyJ1c2VyX2lkIjogNDIxMjksICJ0YXNrX2lkIjogIiIsICJ=
+lbWFpbF9pZCI6ICIxNTc0OTAwMDYyNTA2XzQyMTI5XzkxNTZfNDkxNy5zYy0xMF85XzRfNDAtaW=
+5ib3VuZDAkMjAxNzMwMjU4MDI0NEB3aHUuZWR1LmNuIiwgInNpZ24iOiAiOGE5Nzc0YjQyYmE2M=
+DI1MDFmOWM3YTE5YjQwZTRiMzIiLCAidXNlcl9oZWFkZXJzIjoge30sICJsYWJlbCI6IDAsICJy=
+ZWNlaXZlciI6ICIyMDE3MzAyNTgwMjQ0QHdodS5lZHUuY24iLCAibWFpbGxpc3RfaWQiOiAwLCA=
+iY2F0ZWdvcnlfaWQiOiAxMjIyNjh9">=E7=82=B9=E5=87=BB=E8=BF=99=E9=87=8C=E5=8F=
+=96=E6=B6=88=E8=AE=A2=E9=98=85<br />click to unsubscribe</a></div></div>
+
+
+

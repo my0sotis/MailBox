@@ -29,14 +29,14 @@
         </el-row>
         <el-row :gutter="10">
           <el-col :span="10">
-            <el-input v-model="recieveMail_form.theme">
+            <el-input v-model="recieveMail_form.subject">
               <template slot="prepend">主题:</template>
             </el-input>
           </el-col>
         </el-row>
         <el-row :gutter="10">
           <el-col :span="10">
-            <el-input v-model="recieveMail_form.date">
+            <el-input v-model="recieveMail_form.date" >
               <template slot="prepend">时间:</template>
             </el-input>
           </el-col>
@@ -48,7 +48,7 @@
           type="textarea"
           :rows="10"
           placeholder="邮件内容"
-          v-model="recieveMail_form.content"
+          v-html = "recieveMail_form.content"
         ></el-input>
 
 
@@ -74,6 +74,24 @@
                 :value="item.value"></el-option>
             </el-select>
           </el-col>
+          <el-col :span="13">
+            <div id="enclosureSel">
+              <el-select  id = "enclosure" v-model="documentName" :placeholder= "existed" @change="downloadDoc"
+                          :disabled = "{ exist :this.recieveMail_form.enclosure.length == 0}?false:true">
+                <el-option
+                  v-for="item in documents"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                <span style="float: left">
+                    <i class="el-icon-s-cooperation"></i>
+                </span>
+                  <span style="float: right; color: #8492a6; font-size: 13px">{{ item.label }}</span>
+                </el-option>
+              </el-select>
+            </div>
+
+          </el-col>
         </el-row>
 
       </el-form>
@@ -87,13 +105,18 @@ export default {
     return {
       //select组件需要根据当前界面的不同动态添加选项
       options: [],
+      documents:[
+
+      ],
+      documentName:'',
       value: '',
       //邮件信息表单（可能是sender或者receiver，就用sender代表了）
       recieveMail_form: {
         sender: "",
-        theme: "",
+        subject: "",
         date: "",
-        content: ""
+        content: "",
+        enclosure:[]
       },
       chooseNo : "",
       //上一个界面的URL
@@ -109,6 +132,7 @@ export default {
   created() {
 
     this.sendChooseNo();
+    this.loadEnclosure();
     //初始化面包屑
     this.$nextTick(()=> {
       //根据URL判断当前界面，初始化select和面包屑
@@ -151,7 +175,8 @@ export default {
           this.currentUrl['s_or_r'] = '收件';
           break;
       }
-    })
+
+    });
   },
   //钩子函数，判断上一个界面的URL
   beforeRouteEnter (to, from, next){
@@ -160,7 +185,64 @@ export default {
       vm.currentUrl["url"] = from.path
     })
   },
+  computed: {
+      existed(){
+        return this.recieveMail_form.enclosure.length ? '有附件':'无附件'
+
+    }
+  },
   methods: {
+    loadEnclosure(){
+      if(this.recieveMail_form.enclosure.length !=0){
+        this.documents.push(
+          {
+            value: '全部下载',
+            label: '全部下载'
+          }
+        );
+      }
+      for(var i =0;i<this.recieveMail_form.enclosure.length;i++){
+        let spliteUrl = this.recieveMail_form.enclosure[i].split('/')
+        let documentName=  spliteUrl[spliteUrl.length-1]
+        this.documents.push(
+          {
+            value: documentName,
+            label: documentName
+          }
+        );
+
+      }
+    },
+    //处理附件
+    downloadDoc(){
+      if(this.documentName == '全部下载'){
+        for(var i = 0;i<this.recieveMail_form.enclosure.length;i++){
+          let a = document.createElement("a");
+          a.href =this.recieveMail_form.enclosure[i];
+          a.download = this.recieveMail_form.enclosure[i].split('/')[this.recieveMail_form.enclosure[i].split('/').length-1];
+          a.style.display = "none";
+          document.body.appendChild(a);
+          a.click();  //下载
+          URL.revokeObjectURL(a.href);    // 释放URL 对象
+          document.body.removeChild(a);   // 删除 a 标签
+        }
+      }
+      else {
+        for(var i = 0;i<this.recieveMail_form.enclosure.length;i++){
+          if(this.documentName == this.recieveMail_form.enclosure[i].split('/')[this.recieveMail_form.enclosure[i].split('/').length-1]){
+            let a = document.createElement("a");
+            a.href =this.recieveMail_form.enclosure[i];
+            a.download = this.documentName;
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();  //下载
+            URL.revokeObjectURL(a.href);    // 释放URL 对象
+            document.body.removeChild(a);   // 删除 a 标签
+            break;
+          }
+        }
+      }
+    },
     //移动邮件到其他位置
     moveDestination(){
       if(this.value === '已发送'){
@@ -179,7 +261,6 @@ export default {
     sendChooseNo(){
       let chooseNo = this.$route.query["id"];//取得的query['id']是数组
       this.chooseNo = chooseNo[0];
-      console.log(this.chooseNo);
       //测试部分，仅测试序号为1的邮件数据
       if(this.chooseNo == "1"){
         var url = 'http://localhost:8080/static/testLook.json';
@@ -187,11 +268,17 @@ export default {
         this.$axios.get(url).then(
           res=>{
             this.recieveMail_form.sender = res.data["sender"]
-            this.recieveMail_form.theme = res.data["theme"]
+            this.recieveMail_form.subject = res.data["subject"]
             this.recieveMail_form.date = res.data["date"]
             this.recieveMail_form.content = res.data["content"]
+
+            for(var i = 0;i<res.data["enclosure"].length;i++){
+                this.recieveMail_form.enclosure.push(res.data["enclosure"][i])
+            }
+            this.loadEnclosure();
           }
         )
+
       }
       else{
         console.log("error!!!!")
@@ -226,6 +313,7 @@ export default {
     clear_btn() {
       //测试部分
       alert('删除邮件成功');
+      alert(this.recieveMail_form.enclosure.length);
       this.$router.replace(this.currentUrl['url'])
       //正式版本
       //交互内容：传递邮件序号到后台，后台返回一个json对象，不是数组
@@ -262,5 +350,7 @@ export default {
 .bottom_btns{
     margin-top: 10px;
 }
-
+#enclosureSel{
+  float:right;
+}
 </style>>
