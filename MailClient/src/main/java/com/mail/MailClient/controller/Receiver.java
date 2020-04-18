@@ -835,7 +835,7 @@ public class Receiver {
                 result = fileContent.toString().getBytes();
             }
             StringBuilder fileLocation = new StringBuilder();
-            fileLocation.append("./").append(mail.getBriefInfo().getMessageID()).append("/").append(lastType);
+            fileLocation.append("./Assets/").append(mail.getBriefInfo().getMessageID()).append("/").append(lastType);
             File dir = new File(fileLocation.toString());
             if (!dir.exists()) {
                 dir.mkdirs();
