@@ -672,7 +672,7 @@ public class Receiver {
             while (i < mailInfos.size()) {
                 // 去除行尾多余的符号
                 mailContent = mailInfos.get(i).trim();
-                if (mailContent.endsWith("=")) {
+                if ("quoted-printable".equalsIgnoreCase(encoding) && mailContent.endsWith("=")) {
                     mailContent = mailContent.substring(0, mailContent.length() - 1);
                 }
                 mailContents.append(mailContent);
@@ -875,7 +875,7 @@ public class Receiver {
                 result = fileContent.toString().getBytes();
             }
             StringBuilder fileLocation = new StringBuilder();
-            fileLocation.append("./").append(mail.getBriefInfo().getMessageID()).append("/").append(lastType);
+            fileLocation.append("Assets/").append(mail.getBriefInfo().getMessageID()).append("/").append(lastType);
             File dir = new File(fileLocation.toString());
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -888,8 +888,15 @@ public class Receiver {
             OutputStream out = new FileOutputStream(file);
             out.write(result);
             out.close();
+            mail.addAttachment(file.getAbsolutePath());
             lastType = "";
         }
     }
 
+    public static void main(String[] args)
+    {
+        Receiver receiver = new Receiver("2017302580244@whu.edu.cn", "zpc888wsadjkl,./");
+        receiver.receiveMailAt(5);
+        System.out.println(receiver.mail.getAttachments().get(0));
+    }
 }

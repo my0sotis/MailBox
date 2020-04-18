@@ -24,7 +24,7 @@ public class MailController
     //以json形式返回邮件简要信息
     @GetMapping("api/briefMails")
     public List<BriefMail> getJson(){
-        receiver = new Receiver(BasicInfo.username, BasicInfo.passworld);
+        receiver = new Receiver("2017302580244@whu.edu.cn", "zpc888wsadjkl,./");
         receiver.list.clear();
         receiver.receiveMails();
         return receiver.list;
@@ -33,7 +33,7 @@ public class MailController
     //转发某一邮件
     @GetMapping("api/transmit/{no}")
     public DetailedMail transmit(@PathVariable(name = "no") Integer no){
-        receiver = new Receiver(BasicInfo.username, BasicInfo.passworld);
+        receiver = new Receiver("2017302580244@whu.edu.cn", "zpc888wsadjkl,./");
         receiver.receiveMailAt(no);
         return receiver.mail;
     }
