@@ -1,6 +1,6 @@
 package com.mail.MailClient.entity;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Base64;
@@ -206,11 +206,5 @@ public class CodeHelper {
             mCurrentLineLength = required;
         }  else
             mCurrentLineLength += required;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(CodeHelper.
-                QPConvertCharset("=E7=82=B9=E5=87=BB=E8=BF=99=E9=87=8C=E5=8F=96=E6=B6=88=E8=AE=A2=E9=98=85".
-                        getBytes(), "utf-8"));
     }
 }
