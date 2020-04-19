@@ -261,17 +261,20 @@ export default {
     //获取当前界面的URL中的邮件序号
     sendChooseNo(){
       let chooseNo = this.$route.query["id"];//取得的query['id']是数组
-      //补充部分，查看的邮件属于哪一个数据表
-      let fromPage = this.$route.query["page"];
-
-      console.log(chooseNo);
-      this.$axios.get("/transmit/"+chooseNo).then(
+      let type = this.$route.query["type"];  //-1代表列表 0代表已发送 1代表草稿 2代表垃圾箱
+      var url = "";
+      if(type === -1){
+        url = "/transmit/"+chooseNo;
+      }
+      else{
+        url = "/transmitPost/"+chooseNo+"&&"+type;
+      }
+      this.$axios.get(url).then(
         res=>{
           this.recieveMail_form.sender = res.data["briefInfo"]["senderEmail"];
           this.recieveMail_form.subject = res.data["briefInfo"]["subject"];
           this.recieveMail_form.date = res.data["briefInfo"]["datetime"];
           this.recieveMail_form.content = res.data["content"];
-          // this.recieveMail_form.enclosure = res.data["attachments"];
 
           for(let i = 0;i<res.data["attachments"].length;i++){
             this.recieveMail_form.enclosure.push(res.data["attachments"][i])
@@ -283,26 +286,31 @@ export default {
     //回复
     reply() {
       let chooseNo = this.$route.query["id"];
-
       //传递该邮件序号
       this.$router.push({path:'/sendMail',query:{
           id : chooseNo,
           judge: "0",
-          page : this.$route.query["page"]
+          type:this.$route.query["type"]
         }})
     },
     //删除该邮件
     clear_btn() {
       let chooseNo = this.$route.query["id"];
-      //补充部分，查看的邮件属于哪一个数据表
-      let fromPage = this.$route.query["page"];
-
+      let type = this.$route.query["type"];
+      var url = "";
+      if(type === -1){
+        url = "/deleteMail/"+chooseNo;
+      }
+      else{
+        url = "/deletePostMail/"+chooseNo+"&&"+type;
+      }
+      console.log(url);
       this.$axios
-        .post("/deleteMail/"+chooseNo)
+        .post(url)
         .then(successResponse => {
           if (successResponse.data.code === 200) {
             alert("已移动邮件至垃圾箱");
-            location.reload();
+            this.$router.replace({ path: "/recieveMail" });
           } else {
             alert("删除失败");
           }

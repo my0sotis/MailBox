@@ -183,24 +183,29 @@ export default {
     sendChooseNo() {
       let chooseNo = this.$route.query["id"]; //取得的query['id']是数组
       let judge = this.$route.query["judge"];
-      //补充部分，需要的从上一个lookmail界面，或者从draftMail界面直接传递过来的邮件类型，即这封邮件属于哪个数据表
-      let fromPage = this.$route.query["page"];
-
+      let type = this.$route.query["type"];
       this.chooseNo = chooseNo;
+      var url = "";
+      if(type === -1){
+        url = "/transmit/"+this.chooseNo;
+      }
+      else{
+        url = "/transmitPost/"+this.chooseNo+"&&"+type;
+      }
 
-      this.$axios.get("/transmit/"+this.chooseNo).then(res => {
+      this.$axios.get(url).then(res => {
         if(res != null){
           if(judge === '1'){ //转发
             this.sendMail_form.subject = res.data["briefInfo"]["subject"];
             this.sendMail_form.content = res.data["content"];
-            //补充，转发部分的附件添加
             for(let i = 0;i<res.data["attachments"].length;i++){
               this.sendMail_form.attachments.push(res.data["attachments"][i])
-              this.fileName += res.data["attachments"][i].split('/')[res.data["attachments"][i].split('/').length-1]
             }
+            this.fileName += "  "+res.data["attachments"][i][res.data["attachments"][i].length-1];
           }
           else if(judge === "0"){ //回复
-            this.sendMail_form.to = res.data["briefInfo"]["senderName"];
+            console.log(res.data["briefInfo"]["senderEmail"]);
+            this.sendMail_form.to = res.data["briefInfo"]["senderEmail"];
           }
         }
         else{
@@ -218,6 +223,41 @@ export default {
     //   //发送邮件
     // },
     draft: function(event) {
+      this.sendMail_form.username = localStorage.getItem("login_username");
+      this.sendMail_form.password = localStorage.getItem("login_password");
+
+      //处理收件人信息
+      let str=this.sendMail_form.to
+      let strlist=str.split(';')
+      for(let i=0;i<strlist.length;i++){
+        this.tolist[i]=strlist[i];
+        console.log(this.tolist[i])
+      }
+
+      //组织元素发生默认的行为
+      event.preventDefault();
+      let formData = new FormData();
+      for (let i = 0; i < this.file.length; i++)
+        formData.append("file", this.file[i]);
+      this.$axios.post("/attachments", formData).catch(failResponse => {});
+
+      this.$axios
+        .post("/draft", {
+          username: this.sendMail_form.username,
+          password: this.sendMail_form.password,
+          to: this.tolist,
+          cc: this.sendMail_form.cc,
+          bcc: this.sendMail_form.bcc,
+          subject: this.sendMail_form.subject,
+          content: this.sendMail_form.content,
+          attachments: null
+        })
+        .then(successResponse => {
+          if (successResponse.data.code === 250) {
+            this.$router.replace({ path: "/recieveMail" });
+          }
+        })
+        .catch(failResponse => {});
     },
     cancel_btn() {
       this.sendMail_form.username = "";

@@ -20,22 +20,22 @@
             width="55">
           </el-table-column>
           <el-table-column
-            prop="no"
+            prop="num"
             label="序号"
             width="55">
           </el-table-column>
           <el-table-column
-            prop="date"
+            prop="datetime"
             label="发送日期"
             width="120">
           </el-table-column>
           <el-table-column
-            prop="sender"
+            prop="senderEmail"
             label="发件人"
             width="250">
           </el-table-column>
           <el-table-column
-            prop="theme"
+            prop="subject"
             label="主题"
             width="600"
             show-overflow-tooltip>
@@ -84,16 +84,14 @@ export default {
       //查看邮件具体内容的Json变量
       lookMailJson : null,
       options: [{
-        value: '收件箱',
-        label: '收件箱'
-      }, {
-        value: '已发送',
-        label: '已发送'
-      },
-        {
-          value: '垃圾箱',
-          label: '垃圾箱'
-        }],
+        value: '草稿箱',
+        label: '草稿箱'
+      }
+      //   {
+      //   value: '已发送',
+      //   label: '已发送'
+      // }
+      ],
       value: '',
       //接收垃圾邮件的数组
       tableData : [],
@@ -112,74 +110,77 @@ export default {
     getchooseNo(mul){
       let no = [];
       for(var i = 0;i<mul.length;i++){
-        no.push(mul[i].no)
+        no.push(mul[i].num)
       }
       return no;
     },
-    //读取本地json文件（用于测试，正式版本将从后台获取json数组对象)
+    //转发
+    transmit() {
+      let chooseNo = this.getchooseNo(this.multipleSelection);
+      if(chooseNo.length === 1){
+        this.$router.push({path:'/sendMail',query:{
+            id : chooseNo,
+            type : 2,
+            judge: "1",
+          }})
+      }
+      else{
+        alert("转发的邮件数量必须为1")
+      }
+    },
+    //读取本地json文件（用于测试，正式版本将从后台获取json文件)
     getJsonData(){
-      var url = 'http://localhost:8080/static/testTable.json';
       //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json数组
-      this.$axios.get(url).then(
+      this.$axios.get("/briefDBMails/2").then(
         res=>{
-            for(var i =0;i<res.data.length;i++){
-              this.tableData.push(res.data[i])
-            }
-            console.log(this.tableData)
+          for(var i =0;i<res.data.length;i++){
+            this.tableData.push(res.data[i])
+          }
+          console.log(this.tableData)
         }
       )
     },
     //移动邮件至收件箱或者已发送
     move_btn(){
-      if(this.value == "收件箱" && this.multipleSelection.length != 0){
-        let receiveNo = this.getchooseNo(this.multipleSelection);
-        alert("已将邮件移至收件箱" + receiveNo);
-        //交互内容：传递选择的邮件序号，后台标记相应的邮件为收件箱的，返回一个alert作为结果
-        this.$axios
-          .post('/rubbishMail', {
-            chooseNo: receiveNo,
-            page : this.$route.fullPath.split('/')[1]
-          })
-          .then(successResponse => {
-            alert('成功移至收件箱')
-          })
-          .catch(function (error) {
-            console.log(error);
-            alert('移动邮件失败')
-          })
+      var type = 0;
+      if(this.value === "已发送" && this.multipleSelection.length != 0){
+        type = 0;
       }
-      else if(this.value =="已发送" && this.multipleSelection.length != 0){
-        let al_SendNo = this.getchooseNo(this.multipleSelection);
-        this.$axios
-          .post('/rubbishMail', {
-            chooseNo: al_SendNo,
-            page : this.$route.fullPath.split('/')[1]
-          })
-          .then(successResponse => {
-            alert('成功移至已发送')
-          })
-          .catch(function (error) {
-            console.log(error);
-            alert('移动邮件失败')
-          })
-        alert("已将邮件移至已发送");
+      else if(this.value ==="草稿箱" && this.multipleSelection.length != 0) {
+        type = 1;
       }
-      else{
-        alert("请选择移动的邮件和移至的地方");
-      }
+      let receiveNo = this.getchooseNo(this.multipleSelection);
+      //交互内容：传递选择的邮件序号，后台标记相应的邮件为收件箱的，返回一个alert作为结果
+      this.$axios
+        .get('/moveMails/'+receiveNo+"&&"+type)
+        .then(successResponse => {
+          if(type === 0){
+            console.log('/moveMails/'+receiveNo+"&&"+type);
+            alert('成功移至已发送');
+            location.reload();
+          }
+          else if(type === 1){
+            location.reload();
+            alert('成功移至草稿箱')
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          alert('移动邮件失败')
+        });
     },
     //删除选择的邮件
     clear_btn(){
       let deleteNo = this.getchooseNo(this.multipleSelection);
+      if(deleteNo === nul)
+        return;
       //交互内容：传递参数deleteNo邮件序号，后台删除相同序号的邮件
       this.$axios
-        .post('/rubbishMail', {
-          chooseNo: deleteNo,
-          page : this.$route.fullPath.split('/')[1]
-        })
+        .post('/deletePostMail/'+deleteNo+"&&2")
         .then(successResponse => {
           if(successResponse.data.code === 200){
-            alert('清空邮件成功')
+            alert('清空邮件成功');
+            location.reload();
           }
           else{
             alert('清空邮件失败');
@@ -205,30 +206,11 @@ export default {
     },
     //查看特定的邮件信息
     handleEdit(index) {
-    //测试部分
+      //测试部分
       this.$router.push({path:'/lookMail',query:{
-                 id : this.tableData[index].no,
-                page : this.$route.fullPath.split('/')[1]
-               }})
-
-      //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面
-      /*this.$axios
-        .post('/rubbishMail', {
-           chooseNo: this.tableData[index].no,
-        })
-        .then(successResponse => {
-           if(successResponse.data.code === 200){
-               this.$router.push({path:'/lookMail',query:{
-                 id : this.tableData[index].no
-               }})
-           }
-           else{
-             alert('查看邮件失败');
-           }
-        })
-        .catch(function (error) {
-            console.log(error);
-        })*/
+          id : this.tableData[index].num,
+          type : 2
+        }})
     },
   }
 };

@@ -23,17 +23,17 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="no"
+          prop="num"
           label="序号"
           width="55">
         </el-table-column>
         <el-table-column
-          prop="date"
+          prop="datetime"
           label="发送日期"
           width="120">
         </el-table-column>
         <el-table-column
-          prop="receiver"
+          prop="receiverEmail"
           label="收件人"
           width="250">
         </el-table-column>
@@ -60,7 +60,7 @@
         </el-col>
         <el-col :span="2">
           <!--删除-->
-          <el-button round @click="clear_btn">删除</el-button>
+          <el-button round @click="move2Rubbish">删除</el-button>
         </el-col>
         <el-col :span="2">
           <!--转发-->
@@ -89,43 +89,28 @@
       getchooseNo(mul){
         let no = [];
         for(var i = 0;i<mul.length;i++){
-          no.push(mul[i].no)
+          no.push(mul[i].num)
         }
         return no;
       },
       //转发
       transmit() {
         let chooseNo = this.getchooseNo(this.multipleSelection);
-        if(chooseNo.length != 1){
-          alert("转发的邮件数量必须为1")
+        if(chooseNo.length === 1){
+          this.$router.push({path:'/sendMail',query:{
+              id : chooseNo,
+              type : 1,
+              judge:"1"
+            }})
         }
         else{
-          //交互内容：传递需要转发的邮件序号，成功即打开发送邮件的界面，同时获取相关邮件信息
-          this.$axios
-            .post('/draftMail', {
-              chooseNo: chooseNo,
-            })
-            .then(successResponse => {
-              if(successResponse.data.code === 200){
-                this.$router.push({path:'/sendMail',query:{
-                  id : chooseNo,
-                  page : this.$route.fullPath.split('/')[1]
-                }})
-              }
-              else{
-                alert('转发邮件失败');
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-            })
+          alert("转发的邮件数量必须为1")
         }
       },
       //读取本地json文件（用于测试，正式版本将从后台获取json文件)
       getJsonData(){
-        var url = 'http://localhost:8080/static/testDraft.json';
         //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json数组
-        this.$axios.get(url).then(
+        this.$axios.get("/briefDBMails/1").then(
           res=>{
             for(var i =0;i<res.data.length;i++){
               this.tableData.push(res.data[i])
@@ -134,21 +119,20 @@
           }
         )
       },
-      //删除选择的邮件
-      clear_btn(){
+      //移动选择的邮件
+      move2Rubbish(){
         let deleteNo = this.getchooseNo(this.multipleSelection);
-        //交互内容：传递需要删除的草稿邮件序号，后台直接删除，不需要放到垃圾箱
+        console.log(deleteNo);
+        //交互内容：传递选择的邮件序号，后台修改相应邮件的所属为rubbish，且删除al_send内的相同邮件数据
         this.$axios
-          .post('/draftMail', {
-            chooseNo: deleteNo,
-            page : this.$route.fullPath.split('/')[1]
-          })
+          .post('/deletePostMail/'+deleteNo+"&&1")
           .then(successResponse => {
             if(successResponse.data.code === 200){
-              alert('删除草稿成功')
+              alert('已移动邮件至垃圾箱');
+              location.reload();
             }
             else{
-              alert('删除草稿失败');
+              alert('移动邮件失败');
             }
           })
           .catch(function (error) {
@@ -171,26 +155,12 @@
       },
       //查看特定的邮件信息
       handleEdit(index) {
-        //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面
-        this.$axios
-          .post('/lookMail', {
-            chooseNo: this.tableData[index].no,
-          })
-          .then(successResponse => {
-            if(successResponse.data.code === 200){
-              this.$router.push({path:'/lookMail',query:{
-                id : this.tableData[index].no,
-                page : this.$route.fullPath.split('/')[1]
-              }})
-            }
-            else{
-              alert('查看邮件失败');
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-      },
+        //测试部分
+        this.$router.push({path:'/lookMail',query:{
+            id : this.tableData[index].num,
+            type : 1
+          }})
+      }
     }
   };
 

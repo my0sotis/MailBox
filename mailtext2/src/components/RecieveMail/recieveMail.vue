@@ -85,7 +85,8 @@ export default {
           path: "/sendMail",
           query: {
             id: this.tableData.length - chooseNo[0] + 1,
-            judge: "1"
+            judge: "1",
+            type:-1
           }
         });
       }
@@ -151,6 +152,7 @@ export default {
         path: "/lookMail",
         query: {
           id: count,
+          type : -1
         }
       });
     }
