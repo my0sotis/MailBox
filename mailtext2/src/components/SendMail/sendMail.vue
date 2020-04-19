@@ -202,6 +202,7 @@ export default {
               this.sendMail_form.attachments.push(res.data["attachments"][i])
             }
             this.fileName += "  "+res.data["attachments"][i][res.data["attachments"][i].length-1];
+            alert("附件添加成功!");
           }
           else if(judge === "0"){ //回复
             console.log(res.data["briefInfo"]["senderEmail"]);
