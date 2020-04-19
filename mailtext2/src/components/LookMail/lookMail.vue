@@ -58,7 +58,7 @@
             <el-button type="primary" round @click="reply">回复</el-button>
           </el-col>
           <el-col :span="2">
-            <el-button round @click="clear_btn">清空</el-button>
+            <el-button round @click="clear_btn">删除</el-button>
           </el-col>
           <el-col :span="2">
             <el-button round @click="returnTo" class="R_btn">返回</el-button>
@@ -66,7 +66,7 @@
           <el-col :span="4">
             <!--移动邮件，其中disabled属性判断当前界面能否使用移动邮件功能-->
             <el-select v-model="value" placeholder = "移动至" @change="moveDestination"
-            :disabled = "{ page: this.currentUrl.url['title'] == ('草稿箱')}?false :true">
+                       :disabled = "{ page: this.currentUrl.url['title'] == ('草稿箱')}?false :true">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -186,8 +186,8 @@ export default {
     })
   },
   computed: {
-      existed(){
-        return this.recieveMail_form.enclosure.length ? '有附件':'无附件'
+    existed(){
+      return this.recieveMail_form.enclosure.length ? '有附件':'无附件'
 
     }
   },
@@ -215,7 +215,7 @@ export default {
     },
     //处理附件
     downloadDoc(){
-      if(this.documentName == '全部下载'){
+      if(this.documentName === '全部下载'){
         for(var i = 0;i<this.recieveMail_form.enclosure.length;i++){
           let a = document.createElement("a");
           a.href =this.recieveMail_form.enclosure[i];
@@ -223,13 +223,14 @@ export default {
           a.style.display = "none";
           document.body.appendChild(a);
           a.click();  //下载
+          console.log(a.href);
           URL.revokeObjectURL(a.href);    // 释放URL 对象
           document.body.removeChild(a);   // 删除 a 标签
         }
       }
       else {
         for(var i = 0;i<this.recieveMail_form.enclosure.length;i++){
-          if(this.documentName == this.recieveMail_form.enclosure[i].split('/')[this.recieveMail_form.enclosure[i].split('/').length-1]){
+          if(this.documentName === this.recieveMail_form.enclosure[i].split('/')[this.recieveMail_form.enclosure[i].split('/').length-1]){
             let a = document.createElement("a");
             a.href =this.recieveMail_form.enclosure[i];
             a.download = this.documentName;
@@ -260,97 +261,64 @@ export default {
     //获取当前界面的URL中的邮件序号
     sendChooseNo(){
       let chooseNo = this.$route.query["id"];//取得的query['id']是数组
-      this.chooseNo = chooseNo[0];
-      //测试部分，仅测试序号为1的邮件数据
-      if(this.chooseNo == "1"){
-        var url = 'http://localhost:8080/static/testLook.json';
-        //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json对象
-        this.$axios.get(url).then(
-          res=>{
-            this.recieveMail_form.sender = res.data["sender"]
-            this.recieveMail_form.subject = res.data["subject"]
-            this.recieveMail_form.date = res.data["date"]
-            this.recieveMail_form.content = res.data["content"]
+      console.log(chooseNo);
+      this.$axios.get("/transmit/"+chooseNo).then(
+        res=>{
+          this.recieveMail_form.sender = res.data["briefInfo"]["senderEmail"];
+          this.recieveMail_form.subject = res.data["briefInfo"]["subject"];
+          this.recieveMail_form.date = res.data["briefInfo"]["datetime"];
+          this.recieveMail_form.content = res.data["content"];
+          // this.recieveMail_form.enclosure = res.data["attachments"];
 
-            for(var i = 0;i<res.data["enclosure"].length;i++){
-                this.recieveMail_form.enclosure.push(res.data["enclosure"][i])
-            }
-            this.loadEnclosure();
+          for(let i = 0;i<res.data["attachments"].length;i++){
+            this.recieveMail_form.enclosure.push(res.data["attachments"][i])
           }
-        )
-
-      }
-      else{
-        console.log("error!!!!")
-      }
-      //正式版本
-      //交互内容：传递邮件序号到后台，后台返回一个json对象，不是数组
-      /*
-      this.$axios
-        .post('/lookMail', {
-          chooseNo: this.chooseNo,
-        })
-        .then(res => {
-          if(res != null){
-            //返回一个json对象
-          }
-          else{
-            alert('查看邮件失败');
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        })*/
+          this.loadEnclosure();
+        }
+      )
     },
     //回复
     reply() {
+      let chooseNo = this.$route.query["id"];
       //传递该邮件序号
       this.$router.push({path:'/sendMail',query:{
-        id : this.chooseNo
-      }})
+          id : chooseNo,
+          judge: "0"
+        }})
     },
     //删除该邮件
     clear_btn() {
-      //测试部分
-      alert('删除邮件成功');
-      alert(this.recieveMail_form.enclosure.length);
-      this.$router.replace(this.currentUrl['url'])
-      //正式版本
-      //交互内容：传递邮件序号到后台，后台返回一个json对象，不是数组
-      /*
+      let chooseNo = this.$route.query["id"];
       this.$axios
-        .post('/lookMail', {
-          chooseNo: this.chooseNo,
-        })
+        .post("/deleteMail/"+chooseNo)
         .then(successResponse => {
-          if(successResponse.data.code === 200){
-            alert('清空邮件成功');
-            this.$router.replace(this.currentUrl['url'])
-          }
-          else{
-            alert('清空邮件失败');
+          if (successResponse.data.code === 200) {
+            alert("已移动邮件至垃圾箱");
+            location.reload();
+          } else {
+            alert("删除失败");
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.log(error);
-        })*/
+        });
     },
     //返回按钮
     returnTo() {
-        this.$router.replace(this.currentUrl['url'])
+      this.$router.replace(this.currentUrl['url'])
     }
   }
 };
 </script>>
 
 <style scoped>
-.contentMail {
-  margin-top: 10px;
-}
-.bottom_btns{
+  .contentMail {
     margin-top: 10px;
-}
-#enclosureSel{
-  float:right;
-}
+  }
+  .bottom_btns{
+    margin-top: 10px;
+  }
+  #enclosureSel{
+    float:right;
+  }
 </style>>

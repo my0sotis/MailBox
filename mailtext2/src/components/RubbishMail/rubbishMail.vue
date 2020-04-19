@@ -104,6 +104,7 @@ export default {
   //初始化界面时加载邮件数据
   mounted(){
      this.getJsonData();
+     console.log(this.$route.fullPath.split('/')[1])
   },
   //可能还需要单独写一个后台修改数据后，前端同步修改的方法
   methods: {
@@ -203,7 +204,8 @@ export default {
     handleEdit(index) {
     //测试部分
       this.$router.push({path:'/lookMail',query:{
-                 id : this.tableData[index].no
+                 id : this.tableData[index].no,
+                page : this.$route.fullPath.split('/')[1]
                }})
 
       //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面

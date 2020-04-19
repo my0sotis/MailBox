@@ -4,5 +4,5 @@
         "date": "2016-05-03",
         
         "content": "你好<h1>你好</h1>",
-        "enclosure":["/static/testTable.json","/static/testDraft.json"]
+        "enclosure":["./src/assets/testTable.json","/static/testDraft.json"]
     }

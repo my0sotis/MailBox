@@ -105,7 +105,8 @@
             .then(successResponse => {
               if(successResponse.data.code === 200){
                 this.$router.push({path:'/sendMail',query:{
-                  id : chooseNo
+                  id : chooseNo,
+                  page : this.$route.fullPath.split('/')[1]
                 }})
               }
               else{
@@ -137,6 +138,7 @@
         this.$axios
           .post('/Al_send', {
             chooseNo: deleteNo,
+            page : this.$route.fullPath.split('/')[1]
           })
           .then(successResponse => {
             if(successResponse.data.code === 200){
@@ -168,7 +170,8 @@
       handleEdit(index) {
         //测试部分
         this.$router.push({path:'/lookMail',query:{
-          id : this.tableData[index].no
+          id : this.tableData[index].no,
+          page : this.$route.fullPath.split('/')[1]
         }})
         /*
         //交互内容：传递选择的邮件序号，后台返回相应的json数据并传递到打开的lookMail界面

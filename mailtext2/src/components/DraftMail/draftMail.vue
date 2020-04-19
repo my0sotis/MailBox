@@ -108,7 +108,8 @@
             .then(successResponse => {
               if(successResponse.data.code === 200){
                 this.$router.push({path:'/sendMail',query:{
-                  id : chooseNo
+                  id : chooseNo,
+                  page : this.$route.fullPath.split('/')[1]
                 }})
               }
               else{
@@ -140,6 +141,7 @@
         this.$axios
           .post('/draftMail', {
             chooseNo: deleteNo,
+            page : this.$route.fullPath.split('/')[1]
           })
           .then(successResponse => {
             if(successResponse.data.code === 200){
@@ -177,7 +179,8 @@
           .then(successResponse => {
             if(successResponse.data.code === 200){
               this.$router.push({path:'/lookMail',query:{
-                id : this.tableData[index].no
+                id : this.tableData[index].no,
+                page : this.$route.fullPath.split('/')[1]
               }})
             }
             else{
