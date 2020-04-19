@@ -138,6 +138,7 @@ export default {
         this.$axios
           .post('/rubbishMail', {
             chooseNo: receiveNo,
+            page : this.$route.fullPath.split('/')[1]
           })
           .then(successResponse => {
             alert('成功移至收件箱')
@@ -152,6 +153,7 @@ export default {
         this.$axios
           .post('/rubbishMail', {
             chooseNo: al_SendNo,
+            page : this.$route.fullPath.split('/')[1]
           })
           .then(successResponse => {
             alert('成功移至已发送')
@@ -173,6 +175,7 @@ export default {
       this.$axios
         .post('/rubbishMail', {
           chooseNo: deleteNo,
+          page : this.$route.fullPath.split('/')[1]
         })
         .then(successResponse => {
           if(successResponse.data.code === 200){

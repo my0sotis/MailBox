@@ -56,7 +56,7 @@ import {mState} from 'vuex'
     methods: {
       //登陆操作的函数
       login () {
-        
+
         // //测试传输数据
         localStorage.setItem('login_username',this.loginForm.username)
         localStorage.setItem('login_password',this.loginForm.password)
@@ -67,23 +67,23 @@ import {mState} from 'vuex'
         // this.bus.$emit("password",this.loginForm.password)
 
         //测试 切换界面
-        this.$router.push("/home"),
+        // this.$router.push("/home");
 
         this.$axios
           .post('/login', {
             username: this.loginForm.username,
             password: this.loginForm.password
           })
-          .then(successResponse => {    
+          .then(successResponse => {
             //成功
             if (successResponse.data.code === 200) {
-              this.$router.replace({path: '/index'})
+              this.$router.replace({path: '/recieveMail'})
             }else{
               //登陆失败
               this.$message.error('密码错误');
             }
           })
-          .catch(failResponse => {  
+          .catch(failResponse => {
           })
       },
       //重置表单函数

@@ -261,6 +261,9 @@ export default {
     //获取当前界面的URL中的邮件序号
     sendChooseNo(){
       let chooseNo = this.$route.query["id"];//取得的query['id']是数组
+      //补充部分，查看的邮件属于哪一个数据表
+      let fromPage = this.$route.query["page"];
+
       console.log(chooseNo);
       this.$axios.get("/transmit/"+chooseNo).then(
         res=>{
@@ -280,15 +283,20 @@ export default {
     //回复
     reply() {
       let chooseNo = this.$route.query["id"];
+
       //传递该邮件序号
       this.$router.push({path:'/sendMail',query:{
           id : chooseNo,
-          judge: "0"
+          judge: "0",
+          page : this.$route.query["page"]
         }})
     },
     //删除该邮件
     clear_btn() {
       let chooseNo = this.$route.query["id"];
+      //补充部分，查看的邮件属于哪一个数据表
+      let fromPage = this.$route.query["page"];
+
       this.$axios
         .post("/deleteMail/"+chooseNo)
         .then(successResponse => {

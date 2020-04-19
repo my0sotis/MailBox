@@ -16,10 +16,10 @@
       <!-- 前三个按钮区域 -->
       <el-row :gutter="10" class="top_btns">
         <el-col :span="2">
-          <el-button type="primary" round @click="send_btn">发送</el-button>
+          <el-button type="primary" round @click="submit($event)">发送</el-button>
         </el-col>
         <el-col :span="2">
-          <el-button round @click="storeDraft_btn">草稿</el-button>
+          <el-button round @click="draft($event)">草稿</el-button>
         </el-col>
         <el-col :span="2">
           <el-button round @click="cancel_btn">取消</el-button>
@@ -99,14 +99,14 @@
       </div> -->
 
       <!-- 后两个按钮区域 -->
-      <el-row :gutter="10" class="bottom_btns">
-        <el-col :span="2">
-          <el-button type="primary" icon="el-icon-upload2"  round @click="submit($event)">发送</el-button>
-        </el-col>
-        <el-col :span="2">
-          <el-button round @click="cancel_btn">取消</el-button>
-        </el-col>
-      </el-row>
+      <!--<el-row :gutter="10" class="bottom_btns">-->
+        <!--<el-col :span="2">-->
+          <!--<el-button type="primary" icon="el-icon-upload2"  round @click="submit($event)">发送</el-button>-->
+        <!--</el-col>-->
+        <!--<el-col :span="2">-->
+          <!--<el-button round @click="cancel_btn">取消</el-button>-->
+        <!--</el-col>-->
+      <!--</el-row>-->
     </el-card>
   </div>
 </template>>
@@ -124,9 +124,8 @@ export default {
         bcc: [""],
         to: [""], //收件人邮箱
         subject: "", //邮箱的主题
-        content: "", //邮件的内容
-        //补充部分，转发时的附件
-        enclosure:[]
+        content: "",//邮件的内容
+        attachments:[] //附件地址
       },
       //rule规则
       rules: {
@@ -184,63 +183,30 @@ export default {
     sendChooseNo() {
       let chooseNo = this.$route.query["id"]; //取得的query['id']是数组
       let judge = this.$route.query["judge"];
-      this.chooseNo = chooseNo[0];
-      console.log(this.chooseNo);
-      // judge  0 为 回复   1 为转发
-      if (judge == "0") {
-        //测试部分，仅测试序号为1的邮件数据
-        if (this.chooseNo == "1") {
-          var url = "http://localhost:8080/static/testLook.json";
-          //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json对象
-          this.$axios.get(url).then(res => {
-            //只需要填充收件人(回复邮件的时候)
-            this.sendMail_form.to = res.data["sender"];
-            //this.sendMail_form.subject = res.data["theme"]
-            // this.sendMail_form.date = res.data["date"]
-            // this.sendMail_form.content = res.data["content"]
-          });
-        } else {
-          console.log("error!!!!");
-        }
-        //正式版本
-        //交互内容：传递邮件序号到后台，后台返回一个json对象，不是数组
-        /*
-        this.$axios
-        .post('/lookMail', {
-          chooseNo: this.chooseNo,
-        })
-        .then(res => {
-          if(res != null){
-            //返回一个json对象
-          }
-          else{
-            alert('查看邮件失败');
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        })*/
-      }else if(judge == '1'){
-        //测试部分，仅测试序号为1的邮件数据
-        if (this.chooseNo == "1") {
-          var url = "http://localhost:8080/static/testLook.json";
-          //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json对象
-          this.$axios.get(url).then(res => {
-            //只需要填充收件人(回复邮件的时候)
-            this.sendMail_form.to = res.data["sender"];
-            this.sendMail_form.subject = res.data["theme"]
-            //this.sendMail_form.date = res.data["date"]
-            this.sendMail_form.content = res.data["content"]
-            //补充部分，转发附件时添加到enclosure字段，同时修改显示的附件文件名fileName
-            for(var i = 0;i<res.data["attachment"].length;i++){
-              this.sendMail_form.enclosure.push(res.data["attachment"][i])
-              this.fileName += res.data["enclosure"][i].split('/')[res.data["attachment"][i].split('/').length-1]
+      //补充部分，需要的从上一个lookmail界面，或者从draftMail界面直接传递过来的邮件类型，即这封邮件属于哪个数据表
+      let fromPage = this.$route.query["page"];
+
+      this.chooseNo = chooseNo;
+
+      this.$axios.get("/transmit/"+this.chooseNo).then(res => {
+        if(res != null){
+          if(judge === '1'){ //转发
+            this.sendMail_form.subject = res.data["briefInfo"]["subject"];
+            this.sendMail_form.content = res.data["content"];
+            //补充，转发部分的附件添加
+            for(let i = 0;i<res.data["attachments"].length;i++){
+              this.sendMail_form.attachments.push(res.data["attachments"][i])
+              this.fileName += res.data["attachments"][i].split('/')[res.data["attachments"][i].split('/').length-1]
             }
-          });
-        } else {
-          console.log("error!!!!");
+          }
+          else if(judge === "0"){ //回复
+            this.sendMail_form.to = res.data["briefInfo"]["senderName"];
+          }
         }
-      }
+        else{
+          alert('查看邮件失败');
+        }
+      });
     },
     // send_btn() {
     //   //首先把用户名密码输入进去
@@ -251,11 +217,14 @@ export default {
 
     //   //发送邮件
     // },
-    storeDraft_btn() {
-      //草稿箱
+    draft: function(event) {
     },
     cancel_btn() {
-      //取消
+      this.sendMail_form.username = "";
+      this.sendMail_form.password = "";
+      this.tolist = [];
+      this.sendMail_form.subject = "";
+      this.sendMail_form.content = "";
     },
 
     //选择文件的按钮
@@ -275,7 +244,6 @@ export default {
 
       //处理收件人信息
       let str=this.sendMail_form.to
-      console.log(str)
       let strlist=str.split(';')
       for(let i=0;i<strlist.length;i++){
         this.tolist[i]=strlist[i];
@@ -302,7 +270,7 @@ export default {
         })
         .then(successResponse => {
           if (successResponse.data.code === 250) {
-            this.$router.replace({ path: "/index" });
+            this.$router.replace({ path: "/recieveMail" });
           }
         })
         .catch(failResponse => {});
