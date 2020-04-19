@@ -1,5 +1,6 @@
 package com.mail.MailClient.controller;
 
+import com.mail.MailClient.entity.DataOperation;
 import com.mail.MailClient.entity.Mail;
 import com.mail.MailClient.entity.Result;
 import com.mail.MailClient.statics.BasicInfo;
@@ -12,7 +13,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+/**
+ * @author iGao101
+ */
 @Controller
 public class SendController
 {
@@ -48,7 +54,7 @@ public class SendController
     /**
      * 邮件发送
      * @param mail target mail ready to be post
-     * @return 返回码为250代表发送成功
+     * @return 返回码为200代表发送成功
      */
     @CrossOrigin
     @PostMapping(value = "api/mail") //定义访问REST端点的Request URI
@@ -57,7 +63,41 @@ public class SendController
         Sender sender = new Sender(mail);
         sender.transform(paths);
         Result result = sender.sendMail();
+
+        DataOperation dataOperation = new DataOperation();
+        int index = dataOperation.SearchAllSend().size(); //获取所有已发送的数量
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String str = format.format(new Date());           //当前时间
+        StringBuilder attachment = new StringBuilder("");
+        if(mail.getAttachments()!=null)
+            for(String i:mail.getAttachments())
+                attachment.append(i).append("#");
+        dataOperation.AddSend(index+1, str, mail.getUsername(),mail.getTo()[0], mail.getUsername(),mail.getTo()[0], mail.getSubject(), mail.getContent(), attachment.toString());
         System.out.println(result.getCode());
         return result;
+    }
+
+    /**
+     * 草稿保存
+     * @param mail target mail ready to be post
+     * @return 返回码为200代表保存成功
+     */
+    @CrossOrigin
+    @PostMapping(value = "api/draft") //定义访问REST端点的Request URI
+    @ResponseBody
+    public Result draft(@RequestBody Mail mail) {
+        Sender sender = new Sender(mail);
+        sender.transform(paths);
+
+        DataOperation dataOperation = new DataOperation();
+        int index = dataOperation.SearchAllDraft().size(); //获取所有已发送的数量
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String str = format.format(new Date());           //当前时间
+        StringBuilder attachment = new StringBuilder("");
+        if(mail.getAttachments()!=null)
+            for(String i:mail.getAttachments())
+                attachment.append(i).append("#");
+        dataOperation.Adddraft(index+1, str, mail.getUsername(),mail.getTo()[0], mail.getUsername(),mail.getTo()[0], mail.getSubject(), mail.getContent(), attachment.toString());
+        return new Result(250);
     }
 }

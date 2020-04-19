@@ -12,7 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.File;
-
+/**
+ * @author iGao101
+ */
 public class Mail {
     private String username;
     private String password;

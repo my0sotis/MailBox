@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * @author Mavericks
+ * @author iGao101 Mavericks
  */
 public class Sender {
     private static final String LINE_END = "\r\n";
