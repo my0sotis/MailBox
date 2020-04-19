@@ -29,15 +29,15 @@ public class Receiver {
     private final static Pattern datePattern = Pattern.compile("^Date:\\s?(.+)$");
     private final static Pattern fromPattern = Pattern.compile("^From:\\s?\"?([a-zA-Z0-9\\s=?/\\-.@]*)\"? (<(.+)>)?$");
     private final static Pattern replyToPattern =
-            Pattern.compile("^Reply-To:\\s?\"?([a-zA-Z0-9\\s=?/\\-.@]*)\"? (<(.+)>)?$");
+        Pattern.compile("^Reply-To:\\s?\"?([a-zA-Z0-9\\s=?/\\-.@]*)\"? (<(.+)>)?$");
     private final static Pattern toPattern = Pattern.compile("^To:\\s?\"?([a-zA-Z0-9\\s=?/\\-.@]*)\"?\\s?(<(.+)>)?$");
     private final static Pattern subjectPattern = Pattern.compile("^Subject:\\s?(.+)$");
     private final static Pattern mimeCodePattern = Pattern.compile("^=\\?([a-zA-Z0-9\\-]*)\\?([QBqb])\\?(.+)\\?=$");
     private final static Pattern contentTypePattern =
-            Pattern.compile("^Content-Type:\\s?([a-zA-Z/]*);\\s?(charset=\"?([a-zA-Z0-9\\-]*)\"?)?$");
+        Pattern.compile("^Content-Type:\\s?([a-zA-Z/]*);\\s?(charset=\"?([a-zA-Z0-9\\-]*)\"?)?$");
     private final static Pattern boundaryPattern = Pattern.compile("^boundary=\"([a-zA-z_.0-9\\-=]*)\";?$");
     private final static Pattern contentTransferEncodingPattern =
-            Pattern.compile("^Content-Transfer-Encoding:\\s?([a-zA-Z0-9\\-]*)$");
+        Pattern.compile("^Content-Transfer-Encoding:\\s?([a-zA-Z0-9\\-]*)$");
     private final static Pattern textPattern = Pattern.compile("^text/([a-zA-z]*)$");
     private final static Pattern multipartPattern = Pattern.compile("^multipart/([a-zA-z]*)$");
     private final static Pattern charsetPattern = Pattern.compile("^charset=\"?([a-zA-Z0-9\\-]*)\"?;?$");
@@ -648,8 +648,8 @@ public class Receiver {
     private static String lastType = "";
 
     public static void analyzeMailInfo(DetailedMail mail, List<String> mailInfos, String boundary,
-                                       String contentType, String charset, String encoding,
-                                       String name) throws IOException {
+        String contentType, String charset, String encoding,
+        String name) throws IOException {
         // 获取内容类型
         Matcher textMatcher, multipartMatcher;
         if (contentType == null) {
@@ -875,7 +875,8 @@ public class Receiver {
                 result = fileContent.toString().getBytes();
             }
             StringBuilder fileLocation = new StringBuilder();
-            fileLocation.append("Assets/").append(mail.getBriefInfo().getMessageID()).append("/").append(lastType);
+//            fileLocation.append("Assets/").append(mail.getBriefInfo().getMessageID()).append("/").append(lastType);
+            fileLocation.append("../mailtext2/static/").append(lastType);
             File dir = new File(fileLocation.toString());
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -888,15 +889,9 @@ public class Receiver {
             OutputStream out = new FileOutputStream(file);
             out.write(result);
             out.close();
-            mail.addAttachment(file.getAbsolutePath());
+
+            mail.addAttachment((file.getPath()).replaceAll("\\\\","/").replaceAll("../mailtext2", ""));
             lastType = "";
         }
-    }
-
-    public static void main(String[] args)
-    {
-        Receiver receiver = new Receiver("2017302580244@whu.edu.cn", "zpc888wsadjkl,./");
-        receiver.receiveMailAt(5);
-        System.out.println(receiver.mail.getAttachments().get(0));
     }
 }
