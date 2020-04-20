@@ -1,8 +1,8 @@
 <!--
- * @FileDescription: 邮箱 发送邮件 界面的信息
- * @Author: 赵彪
- * @LastEditors: 赵彪
- -->
+* @FileDescription: 发送邮件 界面信息
+* @Author: 赵彪
+* @LastEditors: 赵彪
+-->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
@@ -206,8 +206,7 @@ export default {
             for(let i = 0;i<res.data["attachments"].length;i++){
               this.sendMail_form.attachments.push(res.data["attachments"][i])
             }
-            this.fileName += "  "+res.data["attachments"][i][res.data["attachments"][i].length-1];
-            alert("附件添加成功!");
+            this.fileName += " "+res.data["attachments"][i].split('/')[res.data["attachments"][i].length-1]
           }
           else if(judge === "0"){ //回复
             console.log(res.data["briefInfo"]["senderEmail"]);

@@ -1,8 +1,8 @@
 <!--
- * @FileDescription: 邮箱 查看具体邮件 界面的信息
- * @Author: 张鼎
- * @LastEditors: 张鼎
- -->
+* @FileDescription: 查看具体邮件 界面信息
+* @Author: 张鼎
+* @LastEditors: 张鼎
+-->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
@@ -51,6 +51,7 @@
           v-html = "recieveMail_form.content"
         ></el-input>
 
+
         <!-- 最后的三个按钮 -->
         <el-row :gutter="10" class="bottom_btns">
           <el-col :span="2">
@@ -75,7 +76,6 @@
           </el-col>
           <el-col :span="13">
             <div id="enclosureSel">
-              <!--附件功能，通过判断这封邮件的enclosure附件是否存在存储地址，控制多选框能否被使用-->
               <el-select  id = "enclosure" v-model="documentName" :placeholder= "existed" @change="downloadDoc"
                           :disabled = "{ exist :this.recieveMail_form.enclosure.length == 0}?false:true">
                 <el-option
@@ -106,6 +106,7 @@ export default {
       //select组件需要根据当前界面的不同动态添加选项
       options: [],
       documents:[
+
       ],
       documentName:'',
       value: '',
@@ -124,17 +125,17 @@ export default {
       currentUrl: {
         url : "",
         title :"",//当前界面名称
-        s_or_r : "",//判断界面第一个输入框是发送还是收件
+        s_or_r : "",//第一个输入框是发件人还是收件人
       },
     };
   },
   created() {
-    //获取到具体邮件的序号，并且载入附件信息
+    //界面初始化载入附件和获取当前邮件的序号
     this.sendChooseNo();
     this.loadEnclosure();
-    //初始化面包屑
+    //初始化面包屑导航栏
     this.$nextTick(()=> {
-      //根据URL判断当前界面，初始化select多选框和面包屑导航栏
+      //根据URL判断当前界面，初始化select和面包屑
       switch (this.currentUrl['url']){
         case '/rubbishMail':
           this.currentUrl['title'] = '垃圾箱';
@@ -185,13 +186,13 @@ export default {
     })
   },
   computed: {
-    //动态修改select的placeholder内容
+    //动态修改附件select的placeholder
     existed(){
       return this.recieveMail_form.enclosure.length ? '有附件':'无附件'
     }
   },
   methods: {
-    //载入邮件的附件信息
+    //载入附件的存储地址
     loadEnclosure(){
       if(this.recieveMail_form.enclosure.length !=0){
         this.documents.push(
@@ -213,7 +214,7 @@ export default {
 
       }
     },
-    //点击附件下载
+    //处理附件的下载
     downloadDoc(){
       //全部下载
       if(this.documentName === '全部下载'){

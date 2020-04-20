@@ -1,8 +1,8 @@
 <!--
- * @FileDescription: 邮箱 草稿箱 界面的信息
- * @Author: 张鼎
- * @LastEditors: 张鼎
- -->
+* @FileDescription: 草稿箱 界面信息
+* @Author: 张鼎
+* @LastEditors: 张鼎
+-->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
@@ -12,7 +12,7 @@
     </el-breadcrumb>
     <!-- 卡片区域 -->
     <el-card>
-      <!-- 显示草稿箱 信息 -->
+      <!-- 显示草稿箱 区域 -->
       <el-table
         ref="multipleTable"
         :data="tableData"
@@ -123,6 +123,7 @@
       //移动选择的邮件
       move2Rubbish(){
         let deleteNo = this.getchooseNo(this.multipleSelection);
+        console.log(deleteNo);
         //交互内容：传递选择的邮件序号，后台修改相应邮件的所属为rubbish，且删除al_send内的相同邮件数据
         this.$axios
           .post('/deletePostMail/'+deleteNo+"&&1")
@@ -155,6 +156,7 @@
       },
       //查看特定的邮件信息
       handleEdit(index) {
+        //测试部分
         this.$router.push({path:'/lookMail',query:{
             id : this.tableData[index].num,
             type : 1
@@ -172,6 +174,7 @@
   .bottom_btns {
     margin-top: 10px;
   }
+
   .navigation {
     margin-top: 10px;
     align-items: center;

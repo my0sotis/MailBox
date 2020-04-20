@@ -1,8 +1,8 @@
 <!--
- * @FileDescription: 导航栏 的信息
- * @Author: 赵彪
- * @LastEditors: 赵彪
- -->
+* @FileDescription: 导航栏信息
+* @Author: 赵彪
+* @LastEditors: 赵彪
+-->
 <template>
   <div>
     <!-- 子页面的显示 -->

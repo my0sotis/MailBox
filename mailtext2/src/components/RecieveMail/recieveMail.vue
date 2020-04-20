@@ -1,8 +1,8 @@
 <!--
- * @FileDescription: 邮箱 收件箱 界面的信息
- * @Author: 张鼎
- * @LastEditors: 张鼎
- -->
+* @FileDescription: 收件箱 界面信息
+* @Author: 张鼎
+* @LastEditors: 张鼎
+-->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
@@ -12,7 +12,7 @@
     </el-breadcrumb>
     <!-- 卡片区域 -->
     <el-card>
-      <!-- 显示收件箱 信息 -->
+      <!-- 显示收件箱 区域 -->
       <el-table
         ref="multipleTable"
         :data="tableData"
@@ -77,6 +77,7 @@ export default {
       }
       return no;
     },
+
     //转发
     transmit() {
       let chooseNo = this.getchooseNo(this.multipleSelection);
@@ -95,6 +96,7 @@ export default {
         alert("转发的邮件数量必须为1");
       }
     },
+
     //移至垃圾箱
     move2Rubbish() {
       let deleteNo = this.getchooseNo(this.multipleSelection);
@@ -117,6 +119,7 @@ export default {
           console.log(error);
         });
     },
+
     //获取邮件简要信息
     getJsonData() {
       //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json数组
@@ -155,6 +158,7 @@ export default {
         }
       });
     }
+
   }
 };
 </script>>
