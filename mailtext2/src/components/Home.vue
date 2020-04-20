@@ -1,3 +1,8 @@
+<!--
+ * @FileDescription: 邮箱 主页 界面的信息
+ * @Author: 赵彪
+ * @LastEditors: 赵彪
+ -->
 <template>
   <el-container class="home-container">
     <!-- 头部区域 -->

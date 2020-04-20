@@ -1,15 +1,18 @@
+<!--
+ * @FileDescription: 邮箱 收件箱 界面的信息
+ * @Author: 张鼎
+ * @LastEditors: 张鼎
+ -->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>收件箱</el-breadcrumb-item>
-      <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
     </el-breadcrumb>
     <!-- 卡片区域 -->
     <el-card>
-      <!-- 显示收件箱 区域 -->
+      <!-- 显示收件箱 信息 -->
       <el-table
         ref="multipleTable"
         :data="tableData"
@@ -65,7 +68,6 @@ export default {
     rLoading.close();
     console.log("loading.close");
   },
-  //可能还需要单独写一个后台修改数据后，前端同步修改的方法
   methods: {
     //获取选择的邮件序号
     getchooseNo(mul) {
@@ -75,7 +77,6 @@ export default {
       }
       return no;
     },
-
     //转发
     transmit() {
       let chooseNo = this.getchooseNo(this.multipleSelection);
@@ -94,7 +95,6 @@ export default {
         alert("转发的邮件数量必须为1");
       }
     },
-
     //移至垃圾箱
     move2Rubbish() {
       let deleteNo = this.getchooseNo(this.multipleSelection);
@@ -117,7 +117,6 @@ export default {
           console.log(error);
         });
     },
-
     //获取邮件简要信息
     getJsonData() {
       //交互内容：传递选择的邮件序号，后台返回该邮件对应的Json数组
@@ -156,7 +155,6 @@ export default {
         }
       });
     }
-
   }
 };
 </script>>

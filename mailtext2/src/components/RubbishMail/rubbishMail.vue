@@ -1,4 +1,9 @@
- <template>
+<!--
+ * @FileDescription: 邮箱 垃圾箱 界面的信息
+ * @Author: 张鼎
+ * @LastEditors: 张鼎
+ -->
+<template>
     <div>
       <!-- 面包屑导航区域 -->
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -102,9 +107,7 @@ export default {
   //初始化界面时加载邮件数据
   mounted(){
      this.getJsonData();
-     console.log(this.$route.fullPath.split('/')[1])
   },
-  //可能还需要单独写一个后台修改数据后，前端同步修改的方法
   methods: {
     //获取选择的邮件序号
     getchooseNo(mul){

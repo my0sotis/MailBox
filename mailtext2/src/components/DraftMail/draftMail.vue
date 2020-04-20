@@ -1,16 +1,18 @@
+<!--
+ * @FileDescription: 邮箱 草稿箱 界面的信息
+ * @Author: 张鼎
+ * @LastEditors: 张鼎
+ -->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>草稿箱</el-breadcrumb-item>
-      <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
     </el-breadcrumb>
     <!-- 卡片区域 -->
     <el-card>
-
-      <!-- 显示草稿箱 区域 -->
+      <!-- 显示草稿箱 信息 -->
       <el-table
         ref="multipleTable"
         :data="tableData"
@@ -83,7 +85,6 @@
     mounted(){
       this.getJsonData();
     },
-    //可能还需要单独写一个后台修改数据后，前端同步修改的方法
     methods: {
       //获取选择的邮件序号
       getchooseNo(mul){
@@ -122,7 +123,6 @@
       //移动选择的邮件
       move2Rubbish(){
         let deleteNo = this.getchooseNo(this.multipleSelection);
-        console.log(deleteNo);
         //交互内容：传递选择的邮件序号，后台修改相应邮件的所属为rubbish，且删除al_send内的相同邮件数据
         this.$axios
           .post('/deletePostMail/'+deleteNo+"&&1")
@@ -155,7 +155,6 @@
       },
       //查看特定的邮件信息
       handleEdit(index) {
-        //测试部分
         this.$router.push({path:'/lookMail',query:{
             id : this.tableData[index].num,
             type : 1
@@ -173,7 +172,6 @@
   .bottom_btns {
     margin-top: 10px;
   }
-
   .navigation {
     margin-top: 10px;
     align-items: center;

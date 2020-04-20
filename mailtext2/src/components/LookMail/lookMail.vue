@@ -1,3 +1,8 @@
+<!--
+ * @FileDescription: 邮箱 查看具体邮件 界面的信息
+ * @Author: 张鼎
+ * @LastEditors: 张鼎
+ -->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
@@ -8,10 +13,6 @@
     </el-breadcrumb>
 
     <el-card>
-      <!-- <div>
-        <h3>邮件主题</h3>
-      </div> -->
-
       <!-- 收件人 主题 区域 -->
       <el-form
         :model="recieveMail_form"
@@ -19,7 +20,6 @@
         label-position="left"
         label-width="0px"
       >
-        <!-- 三个比较重要的信息 -->
         <el-row :gutter="10">
           <el-col :span="10">
             <el-input v-model="recieveMail_form.sender">
@@ -51,7 +51,6 @@
           v-html = "recieveMail_form.content"
         ></el-input>
 
-
         <!-- 最后的三个按钮 -->
         <el-row :gutter="10" class="bottom_btns">
           <el-col :span="2">
@@ -76,6 +75,7 @@
           </el-col>
           <el-col :span="13">
             <div id="enclosureSel">
+              <!--附件功能，通过判断这封邮件的enclosure附件是否存在存储地址，控制多选框能否被使用-->
               <el-select  id = "enclosure" v-model="documentName" :placeholder= "existed" @change="downloadDoc"
                           :disabled = "{ exist :this.recieveMail_form.enclosure.length == 0}?false:true">
                 <el-option
@@ -106,7 +106,6 @@ export default {
       //select组件需要根据当前界面的不同动态添加选项
       options: [],
       documents:[
-
       ],
       documentName:'',
       value: '',
@@ -125,17 +124,17 @@ export default {
       currentUrl: {
         url : "",
         title :"",//当前界面名称
-        s_or_r : "",
+        s_or_r : "",//判断界面第一个输入框是发送还是收件
       },
     };
   },
   created() {
-
+    //获取到具体邮件的序号，并且载入附件信息
     this.sendChooseNo();
     this.loadEnclosure();
     //初始化面包屑
     this.$nextTick(()=> {
-      //根据URL判断当前界面，初始化select和面包屑
+      //根据URL判断当前界面，初始化select多选框和面包屑导航栏
       switch (this.currentUrl['url']){
         case '/rubbishMail':
           this.currentUrl['title'] = '垃圾箱';
@@ -186,12 +185,13 @@ export default {
     })
   },
   computed: {
+    //动态修改select的placeholder内容
     existed(){
       return this.recieveMail_form.enclosure.length ? '有附件':'无附件'
-
     }
   },
   methods: {
+    //载入邮件的附件信息
     loadEnclosure(){
       if(this.recieveMail_form.enclosure.length !=0){
         this.documents.push(
@@ -213,8 +213,9 @@ export default {
 
       }
     },
-    //处理附件
+    //点击附件下载
     downloadDoc(){
+      //全部下载
       if(this.documentName === '全部下载'){
         for(var i = 0;i<this.recieveMail_form.enclosure.length;i++){
           let a = document.createElement("a");
@@ -228,6 +229,7 @@ export default {
           document.body.removeChild(a);   // 删除 a 标签
         }
       }
+      //单个下载
       else {
         for(var i = 0;i<this.recieveMail_form.enclosure.length;i++){
           if(this.documentName === this.recieveMail_form.enclosure[i].split('/')[this.recieveMail_form.enclosure[i].split('/').length-1]){

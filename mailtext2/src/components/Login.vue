@@ -1,3 +1,8 @@
+<!--
+ * @FileDescription: 邮箱 登录 界面的信息
+ * @Author: 赵彪
+ * @LastEditors: 赵彪
+ -->
 <template>
 <body id="poster">
     <!-- 数据绑定：model  ref引用对象-->

@@ -1,3 +1,8 @@
+<!--
+ * @FileDescription: 欢迎 界面的信息
+ * @Author: 赵彪
+ * @LastEditors: 赵彪
+ -->
 <template>
     <div>
         <h3>welcome</h3>

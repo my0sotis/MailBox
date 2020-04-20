@@ -1,17 +1,18 @@
+<!--
+ * @FileDescription: 邮箱 已发送 界面的信息
+ * @Author: 张鼎
+ * @LastEditors: 张鼎
+ -->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>已发送</el-breadcrumb-item>
-      <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
     </el-breadcrumb>
     <!-- 卡片区域 -->
     <el-card>
-      <!-- <div slot="header" class="navigation">
-
-      <!-- 显示已发送 区域 -->
+      <!-- 显示已发送 表格 -->
       <el-table
         ref="multipleTable"
         :data="tableData"
@@ -73,6 +74,7 @@
 
 <script>
   export default {
+    //已发送邮件简略信息
     data() {
       return {
         tableData: [],
@@ -136,7 +138,7 @@
             console.log(error);
           })
       },
-      //取消选择
+      //取消选择的邮件
       toggleSelection(rows) {
         if (rows) {
           rows.forEach(row => {
@@ -152,7 +154,6 @@
       },
       //查看特定的邮件信息
       handleEdit(index) {
-        //测试部分
         this.$router.push({path:'/lookMail',query:{
           id : this.tableData[index].num,
           type : 0

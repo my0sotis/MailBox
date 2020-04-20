@@ -1,3 +1,8 @@
+<!--
+ * @FileDescription: 邮箱 发送邮件 界面的信息
+ * @Author: 赵彪
+ * @LastEditors: 赵彪
+ -->
 <template>
   <div>
     <!-- 面包屑导航区域 -->
