@@ -1,5 +1,8 @@
 package com.mail.MailClient.entity;
 
+/**
+ * @author Mavericks
+ */
 public class BriefMail {
     private int index;
     private int num;

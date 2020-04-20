@@ -3,6 +3,9 @@ package com.mail.MailClient.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Mavericks
+ */
 public class DetailedMail {
     private BriefMail briefInfo;
     private StringBuilder content = new StringBuilder();
