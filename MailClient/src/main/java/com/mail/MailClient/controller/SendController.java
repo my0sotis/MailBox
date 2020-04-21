@@ -14,7 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 高战立
@@ -22,7 +24,6 @@ import java.util.Date;
 @Controller
 public class SendController
 {
-    String[] paths; //存储附件路径
     /**
      * 存储MultipartFile类型附件并获取路径
      * @param file 附件
@@ -30,12 +31,13 @@ public class SendController
     @CrossOrigin
     @PostMapping(value = "api/attachments") //定义访问REST端点的Request URI
     @ResponseBody
-    public void transform(MultipartFile[] file) {
-        paths = new String[file.length];
-        for(int i = 0; i < file.length; i++) {
+    public List<String> transform(MultipartFile[] file) {
+        int size = file.length;
+        List<String> paths = new ArrayList<>(); //存储附件路径
+        for(int i = 0; i < size; i++) {
             try {
                 byte[] bytes = file[i].getBytes();
-                String base = System.getProperty("user.dir") + "/";
+                String base = System.getProperty("user.dir") + "\\";
                 Path path = Paths.get(base + file[i].getOriginalFilename());
                 //如果没有files文件夹，则创建
                 if (!Files.isWritable(path)) {
@@ -43,12 +45,13 @@ public class SendController
                 }
                 //文件写入指定路径
                 Files.write(path, bytes);
-                paths[i] = base + file[i].getOriginalFilename();
+                paths.add(base + file[i].getOriginalFilename());
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return paths;
     }
 
     /**
@@ -61,7 +64,6 @@ public class SendController
     @ResponseBody
     public Result mail(@RequestBody Mail mail) {
         Sender sender = new Sender(mail);
-        sender.transform(paths);
         Result result = sender.sendMail();
 
         DataOperation dataOperation = new DataOperation();
@@ -87,8 +89,6 @@ public class SendController
     @ResponseBody
     public Result draft(@RequestBody Mail mail) {
         Sender sender = new Sender(mail);
-        sender.transform(paths);
-
         DataOperation dataOperation = new DataOperation();
         int index = dataOperation.SearchAllDraft().size(); //获取所有已发送的数量
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
