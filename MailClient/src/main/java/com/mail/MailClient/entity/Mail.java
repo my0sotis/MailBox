@@ -1,19 +1,12 @@
 package com.mail.MailClient.entity;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.File;
 /**
- * @author iGao101
+ * @author 高战立
  */
 public class Mail {
     private String username;

@@ -1,6 +1,6 @@
 package com.mail.MailClient.entity;
 /**
- * @author zhaobiao
+ * @author 赵彪
  */
 public class MailObject
 {

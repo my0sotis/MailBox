@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * @author iGao101 Mavericks
+ * @author 高战立 周鹏川
  */
 public class Sender {
     private static final String LINE_END = "\r\n";
@@ -249,8 +249,9 @@ public class Sender {
         if(attachments != null)
         {
             for(String file : attachments) {
-                if(file != null)
+                if(file != null) {
                     addAttachment(file, null);
+                }
             }
         }
 

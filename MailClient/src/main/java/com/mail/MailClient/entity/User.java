@@ -4,7 +4,7 @@ import com.mail.MailClient.controller.Sender;
 
 /**
  * 用户类
- * @author iGao101
+ * @author 高战立
  */
 public class User
 {

@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 import java.util.Base64;
 
 /**
- * @author Mavericks
+ * @author 周鹏川
  */
 public class CodeHelper {
     private final static Base64.Encoder encoder = Base64.getEncoder();

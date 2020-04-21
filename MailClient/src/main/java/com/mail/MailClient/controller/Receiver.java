@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author Mavericks
+ * @author 周鹏川
  */
 public class Receiver {
     private final String OK = "+OK";

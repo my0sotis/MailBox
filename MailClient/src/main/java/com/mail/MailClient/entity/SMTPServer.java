@@ -3,7 +3,7 @@ package com.mail.MailClient.entity;
 import java.util.HashMap;
 
 /**
- * @author Mavericks
+ * @author 周鹏川
  */
 public class SMTPServer {
 

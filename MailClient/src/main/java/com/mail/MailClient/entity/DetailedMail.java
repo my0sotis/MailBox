@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Mavericks
+ * @author 周鹏川
  */
 public class DetailedMail {
     private BriefMail briefInfo;

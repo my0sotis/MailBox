@@ -1,7 +1,7 @@
 package com.mail.MailClient.entity;
 
 /**
- * @author iGao101
+ * @author 高战立
  */
 public class Result
 {

@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author iGao101
+ * @author 高战立
  */
 @Controller
 public class SendController

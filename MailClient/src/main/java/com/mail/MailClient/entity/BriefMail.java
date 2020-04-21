@@ -1,7 +1,7 @@
 package com.mail.MailClient.entity;
 
 /**
- * @author Mavericks
+ * @author 周鹏川
  */
 public class BriefMail {
     private int index;

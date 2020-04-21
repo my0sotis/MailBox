@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * @author iGao101
+ * @author 高战立
  */
 @Controller
 public class LoginController
