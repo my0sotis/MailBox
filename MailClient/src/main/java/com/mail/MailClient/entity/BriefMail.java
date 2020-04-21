@@ -24,8 +24,6 @@ public class BriefMail {
         this.index = index;
     }
 
-    public BriefMail(){}
-
     public int getIndex() {
         return index;
     }

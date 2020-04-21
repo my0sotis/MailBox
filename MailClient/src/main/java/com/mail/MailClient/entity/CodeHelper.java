@@ -1,7 +1,6 @@
 package com.mail.MailClient.entity;
 
-import java.io.*;
-import java.nio.ByteBuffer;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Base64;
 
@@ -60,13 +59,18 @@ public class CodeHelper {
     }
 
     /**
-     * Convert UTF-8 To GB18030
-     * @param data Source data String
-     * @return Target GB18030 bytes
+     *
+     * @param qp Byte array to decode
+     * @param enc The character encoding of the returned string
+     * @return The decoded string.
      */
-    public static byte[] UTF8ToGB18030(String data) {
-        ByteBuffer gb18030 = Charset.forName("GB18030").encode(data);
-        return gb18030.array();
+    public static String QPConvertCharset(byte[] qp, String enc) {
+        int len= QPConvertCharset(qp);
+        try {
+            return new String(qp, 0, len, enc).replaceAll("_", " ");
+        } catch (UnsupportedEncodingException e) {
+            return new String(qp, 0, len).replaceAll("_", " ");
+        }
     }
 
     private final static byte TAB 	= 0x09;     // /t
@@ -108,10 +112,8 @@ public class CodeHelper {
                         // the ascii digits stored in the array.
                         qp[retlen++]=(byte)(getHexValue(qp[i+1])*16
                                 + getHexValue(qp[i+2]));
-
                         i += 2;
                         continue;
-
                     }
                 }
                 // In all wrong cases leave the original bytes
@@ -135,21 +137,6 @@ public class CodeHelper {
 
     private static byte getHexValue(byte b) {
         return (byte)Character.digit((char)b, 16);
-    }
-
-    /**
-     *
-     * @param qp Byte array to decode
-     * @param enc The character encoding of the returned string
-     * @return The decoded string.
-     */
-    public static String QPConvertCharset(byte[] qp, String enc) {
-        int len= QPConvertCharset(qp);
-        try {
-            return new String(qp, 0, len, enc).replaceAll("_", " ");
-        } catch (UnsupportedEncodingException e) {
-            return new String(qp, 0, len).replaceAll("_", " ");
-        }
     }
 
     /**
@@ -177,8 +164,9 @@ public class CodeHelper {
      * @return The encoded string. If the content is null, return null.
      */
     public static String QPEncode(byte[] content) {
-        if (content == null)
+        if (content == null) {
             return null;
+        }
 
         StringBuilder out = new StringBuilder();
 
@@ -204,7 +192,8 @@ public class CodeHelper {
         if (required + mCurrentLineLength > MAX_LINE_LENGTH - 1) {
             out.append("=/r/n");
             mCurrentLineLength = required;
-        }  else
+        }  else {
             mCurrentLineLength += required;
+        }
     }
 }

@@ -17,9 +17,6 @@ public class Receiver {
     private final String password;
     private Map.Entry<String, Integer> pop;
     private Socket popSocket;
-    boolean isDebug = false;
-    private final BufferedReader in = null;
-    private final BufferedWriter out = null;
     // 所有邮件基本信息
     List<BriefMail> list = new ArrayList<>();
     //某一详细邮件
@@ -42,7 +39,6 @@ public class Receiver {
     private final static Pattern multipartPattern = Pattern.compile("^multipart/([a-zA-z]*)$");
     private final static Pattern charsetPattern = Pattern.compile("^charset=\"?([a-zA-Z0-9\\-]*)\"?;?$");
     private final static Pattern namePattern = Pattern.compile("^name=\"([a-zA-Z0-9.@]*)\"$");
-    private final static Pattern contentIDPattern = Pattern.compile("^Content-ID:\\s?<([a-zA-Z0-9@.]*)>$");
 
     public Receiver(String username, String password) {
         this.username = username;
@@ -74,6 +70,10 @@ public class Receiver {
         return result;
     }
 
+    /**
+     * 新建与POP3服务器的连接
+     * @return 建立信息
+     */
     private Result POP3Client() {
         Result result = new Result(200);
         try {
@@ -96,9 +96,6 @@ public class Receiver {
         String line = "";
         try {
             line = in.readLine();
-            if (isDebug) {
-                System.out.println("服务器状态："+line);
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -130,10 +127,6 @@ public class Receiver {
         out.newLine();
         // 清空缓存区
         out.flush();
-        // 如果软件在测试中使用
-        if (isDebug) {
-            System.out.println("已发送命令:" + str);
-        }
         return getReturn(in);
     }
 
@@ -311,8 +304,6 @@ public class Receiver {
      * @return 返回执行结果类
      */
     public Result deleteMailAt(int index) {
-        // Test Mode
-        setServerInfo(username);
         Result result = POP3Client();
         if (result.getCode() != 200) {
             System.out.println(result.getCode());
@@ -557,7 +548,6 @@ public class Receiver {
             System.out.println(result.getCode());
             return result;
         }
-
         try {
             // Initialize input and output streams
             BufferedReader in = new BufferedReader(new InputStreamReader(popSocket.getInputStream()));
@@ -567,6 +557,7 @@ public class Receiver {
             pass(password,in,out);
             int mailNum = stat(in, out);
             BriefMail mail;
+            list.clear();
             for (int i = mailNum; i >= 1; i--) {
                 mail = getBriefMailInfo(i, top(i, 0, in, out));
                 mail.setNum(mailNum-i+1);
@@ -625,7 +616,6 @@ public class Receiver {
             }
             // 设置对应的基本信息
             mail.setBriefInfo(getBriefMailInfo(index, mailHead.toString()));
-            // TODO 分析内容信息
             i += 1;
             if ("This is a multi-part message in MIME format.".equals(mailInfos[i])) {
                 i += 2;
@@ -706,7 +696,7 @@ public class Receiver {
                     i++;
                 }
                 // 遍历类型
-                for (; i < mailInfos.size() && !mailInfos.get(i).trim().equals(""); i++) {
+                for (; i < mailInfos.size() && !"".equals(mailInfos.get(i).trim()); i++) {
                     matcher = haveContentType ? null : contentTypePattern.matcher(mailInfos.get(i));
                     if (!haveContentType && matcher.matches()) {
                         subContentType = matcher.group(1);
@@ -754,7 +744,7 @@ public class Receiver {
                 subEncoding = "";
                 haveBoundary = false;
                 subBoundary = "";
-                for (; i < mailInfos.size() && !mailInfos.get(i).trim().equals(""); i++) {
+                for (; i < mailInfos.size() && !"".equals(mailInfos.get(i).trim()); i++) {
                     matcher = haveContentType ? null : contentTypePattern.matcher(mailInfos.get(i));
                     if (!haveContentType && matcher.matches()) {
                         subContentType = matcher.group(1);
@@ -807,7 +797,7 @@ public class Receiver {
                     haveName = false;
                     subName = "";
                     // 获取对应信息
-                    for (; i < mailInfos.size() && !mailInfos.get(i).trim().equals(""); i++) {
+                    for (; i < mailInfos.size() && !"".equals(mailInfos.get(i).trim()); i++) {
                         matcher = haveContentType ? null : contentTypePattern.matcher(mailInfos.get(i));
                         if (!haveContentType && matcher.matches()) {
                             subContentType = matcher.group(1);
